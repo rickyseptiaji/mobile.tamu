@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1023699257272",
+    "project_id": "buku-tamu-467c6",
+    "storage_bucket": "buku-tamu-467c6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1023699257272:android:b68427599182043806314d",
+        "android_client_info": {
+          "package_name": "com.example.buku_tamu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWL3Yvs7AcrAqfd4eke0phcvjRjl6V4nA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
