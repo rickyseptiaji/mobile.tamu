@@ -2,7 +2,6 @@ import 'package:buku_tamu/src/features/home/presentation/pages/HomeScreen.dart';
 import 'package:buku_tamu/src/features/settings/presentation/pages/settingsScreen.dart';
 import 'package:flutter/material.dart';
 
-
 class NavigationBar extends StatefulWidget {
   const NavigationBar({super.key});
 
@@ -14,7 +13,7 @@ class _BottomNavigationBarExampleState extends State<NavigationBar> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     HomeScreen(),
-   SettingsScreen()
+    SettingsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -31,10 +30,8 @@ class _BottomNavigationBarExampleState extends State<NavigationBar> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
-
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );

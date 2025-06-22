@@ -16,7 +16,9 @@ class MainLayout extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
+              decoration: BoxDecoration(
+                color: Color(0xFF4C7380),
+              ),
               child: Text(
                 'Menu',
                 style: TextStyle(color: Colors.white, fontSize: 24),

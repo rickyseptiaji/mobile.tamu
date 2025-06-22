@@ -2,9 +2,21 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool isPasswordVisible = false;
+
+  void togglePasswordVisibility() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +62,12 @@ class LoginScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  obscureText: true,
+                  obscureText: !isPasswordVisible,
                   decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                      onPressed: togglePasswordVisibility,
+                    ),
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),

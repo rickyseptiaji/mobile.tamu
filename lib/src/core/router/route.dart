@@ -1,6 +1,8 @@
 import 'package:buku_tamu/src/features/auth/presentation/pages/LoginScreen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/RegisterScreen.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest.dart';
+import 'package:buku_tamu/src/features/home/presentation/pages/DetailRecentVisitor.dart';
+import 'package:buku_tamu/src/features/home/presentation/pages/FormGuest.dart';
 
 import 'package:buku_tamu/src/shared/presentation/bottomBarNavigation.dart';
 import 'package:buku_tamu/src/shared/presentation/mainLayout.dart';
@@ -24,5 +26,10 @@ final GoRouter router = GoRouter(
           MainLayout(title: 'Register', child: RegisterScreen()),
     ),
     GoRoute(path: '/home', builder: (context, state) => NavigationBar()),
+    GoRoute(
+      path: '/home/detail-recent-visitor',
+      builder: (context, state) => DetailRecentVisitor()
+    ),
+    GoRoute(path: '/home/formguest', builder: (context, state) => FormGuest()),
   ],
 );

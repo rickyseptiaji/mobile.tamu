@@ -12,84 +12,81 @@ class _SettingsPage2State extends State<SettingsScreen> {
   bool _isDark = false;
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: _isDark ? ThemeData.dark() : ThemeData.light(),
-      child: Scaffold(
-        body: Center(
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: ListView(
-              children: [
-                _SingleSection(
-                  title: "General",
-                  children: [
-                    _CustomListTile(
-                      title: "Dark Mode",
-                      icon: Icons.dark_mode_outlined,
-                      trailing: Switch(
-                        value: _isDark,
-                        onChanged: (value) {
-                          setState(() {
-                            _isDark = value;
-                          });
-                        },
-                      ),
+    return Scaffold(
+      body: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: ListView(
+            children: [
+              _SingleSection(
+                title: "General",
+                children: [
+                  _CustomListTile(
+                    title: "Dark Mode",
+                    icon: Icons.dark_mode_outlined,
+                    trailing: Switch(
+                      value: _isDark,
+                      onChanged: (value) {
+                        setState(() {
+                          _isDark = value;
+                        });
+                      },
                     ),
-                    const _CustomListTile(
-                      title: "Notifications",
-                      icon: Icons.notifications_none_rounded,
-                    ),
-                    const _CustomListTile(
-                      title: "Security Status",
-                      icon: CupertinoIcons.lock_shield,
-                    ),
-                  ],
-                ),
-                const Divider(),
-                const _SingleSection(
-                  title: "Organization",
-                  children: [
-                    _CustomListTile(
-                      title: "Profile",
-                      icon: Icons.person_outline_rounded,
-                    ),
-                    _CustomListTile(
-                      title: "Messaging",
-                      icon: Icons.message_outlined,
-                    ),
-                    _CustomListTile(
-                      title: "Calling",
-                      icon: Icons.phone_outlined,
-                    ),
-                    _CustomListTile(
-                      title: "People",
-                      icon: Icons.contacts_outlined,
-                    ),
-                    _CustomListTile(
-                      title: "Calendar",
-                      icon: Icons.calendar_today_rounded,
-                    ),
-                  ],
-                ),
-                const Divider(),
-                const _SingleSection(
-                  children: [
-                    _CustomListTile(
-                      title: "Help & Feedback",
-                      icon: Icons.help_outline_rounded,
-                    ),
-                    _CustomListTile(
-                      title: "About",
-                      icon: Icons.info_outline_rounded,
-                    ),
-                    _CustomListTile(
-                      title: "Sign out",
-                      icon: Icons.exit_to_app_rounded,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  const _CustomListTile(
+                    title: "Notifications",
+                    icon: Icons.notifications_none_rounded,
+                  ),
+                  const _CustomListTile(
+                    title: "Security Status",
+                    icon: CupertinoIcons.lock_shield,
+                  ),
+                ],
+              ),
+              const Divider(),
+              const _SingleSection(
+                title: "Organization",
+                children: [
+                  _CustomListTile(
+                    title: "Profile",
+                    icon: Icons.person_outline_rounded,
+                  ),
+                  _CustomListTile(
+                    title: "Messaging",
+                    icon: Icons.message_outlined,
+                  ),
+                  _CustomListTile(
+                    title: "Calling",
+                    icon: Icons.phone_outlined,
+                  ),
+                  _CustomListTile(
+                    title: "People",
+                    icon: Icons.contacts_outlined,
+                  ),
+                  _CustomListTile(
+                    title: "Calendar",
+                    icon: Icons.calendar_today_rounded,
+                  ),
+                ],
+              ),
+              const Divider(),
+              const _SingleSection(
+                children: [
+                  _CustomListTile(
+                    title: "Help & Feedback",
+                    icon: Icons.help_outline_rounded,
+                  ),
+                  _CustomListTile(
+                    title: "About",
+                    icon: Icons.info_outline_rounded,
+                  ),
+                  _CustomListTile(
+                    title: "Sign out",
+                    icon: Icons.exit_to_app_rounded,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
