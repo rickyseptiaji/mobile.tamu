@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 
 class GuestScreen extends StatefulWidget {
@@ -14,17 +16,19 @@ class _GuestScreenState extends State<GuestScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
-  final List<String> toList = ['Ricky', 'Rizky', 'Rizal'];
-  String? selectedTo;
 
-  void submit() {
-    print('Company: ${companyController.text}');
-    print('Name: ${nameController.text}');
-    print('Email: ${emailController.text}');
-    print('Phone: ${phoneController.text}');
-    print('To: $selectedTo');
-    print('Description: ${descriptionController.text}');
-  }
+  String? selectedTo;
+  final List<String> toList = [
+    'HRD',
+    'Finance',  
+    'IT',
+    'Marketing',
+    'Sales',
+    'Logistics',
+  ];
+
+
+  void submit() {}
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +42,15 @@ class _GuestScreenState extends State<GuestScreen> {
             children: [
               const Text(
                 'Isi Form Tamu',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
               TextFormField(
                 controller: companyController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4),
                   labelText: 'Company',
                   border: OutlineInputBorder(),
                 ),
@@ -54,7 +60,9 @@ class _GuestScreenState extends State<GuestScreen> {
 
               TextFormField(
                 controller: nameController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
                   labelText: 'Name',
                   border: OutlineInputBorder(),
                 ),
@@ -65,7 +73,9 @@ class _GuestScreenState extends State<GuestScreen> {
               TextFormField(
                 controller: emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
                   labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
@@ -73,21 +83,68 @@ class _GuestScreenState extends State<GuestScreen> {
                     value!.contains('@') ? null : 'Email tidak valid',
               ),
               const SizedBox(height: 16),
+              Row(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 55,
+                      child: InputDecorator(
+                        decoration: InputDecoration(
+                          labelText: 'Kode Negara',
+                          filled: true,
+                          isDense: true,
+                          fillColor: const Color(
+                            0xFFEDF5F4,
+                          ).withValues(alpha: 0.8),
+                          border: const OutlineInputBorder(),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                        ),
+                        child: DropdownButtonHideUnderline(
+                          child: CountryCodePicker(
+                            onChanged: (e) {
+                              setState(() {});
+                            },
+                            initialSelection: '+62',
+                            favorite: ['+62', 'ID'],
+                            showCountryOnly: false,
+                            showOnlyCountryWhenClosed: false,
+                            alignLeft: false,
+                            padding: EdgeInsets.zero,
+                            textStyle: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
 
-              TextFormField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: const InputDecoration(
-                  labelText: 'No Telp',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Nomor telepon wajib diisi' : null,
+                  const SizedBox(width: 16),
+                  Flexible(
+                    flex: 2,
+                    child: TextFormField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                        labelText: 'No Telp',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Nomor telepon wajib diisi' : null,
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
 
+              const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
                   labelText: 'To',
                   border: OutlineInputBorder(),
                 ),
@@ -104,7 +161,9 @@ class _GuestScreenState extends State<GuestScreen> {
               TextFormField(
                 controller: descriptionController,
                 maxLines: 5,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
                   labelText: 'Description',
                   border: OutlineInputBorder(),
                 ),
@@ -117,9 +176,6 @@ class _GuestScreenState extends State<GuestScreen> {
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
                     submit();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Form berhasil dikirim')),
-                    );
                   }
                 },
                 icon: const Icon(Icons.send),
@@ -129,6 +185,9 @@ class _GuestScreenState extends State<GuestScreen> {
                   textStyle: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),

@@ -1,16 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class RegisterScreen extends ConsumerStatefulWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
@@ -24,6 +23,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     setState(() {
       isPasswordVisible = !isPasswordVisible;
     });
+  }
+
+  void register() async {
+
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    fullNameController.dispose();
+    companyNameController.dispose();
+    phoneNumberController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -77,7 +90,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   controller: fullNameController,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: 'Full Name',
+                    labelText: 'Name',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -86,7 +99,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   controller: companyNameController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Company Name',
+                    labelText: 'Instansi',
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -119,7 +132,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle login logic
+                    register();
                   },
                   child: Text('Register'),
                 ),
