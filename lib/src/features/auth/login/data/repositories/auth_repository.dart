@@ -1,4 +1,4 @@
-import 'package:buku_tamu/src/features/auth/data/models/User.dart';
+import 'package:buku_tamu/src/features/auth/login/data/models/User.dart';
 
 abstract class AuthRepository {
   Future<User> login(String email, String password);

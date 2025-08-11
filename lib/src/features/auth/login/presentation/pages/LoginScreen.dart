@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
       isPasswordVisible = !isPasswordVisible;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,28 +57,42 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextFormField(
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
                     labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 TextFormField(
                   obscureText: !isPasswordVisible,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
                     suffixIcon: IconButton(
-                      icon: Icon(isPasswordVisible ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(
+                        isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                      ),
                       onPressed: togglePasswordVisibility,
                     ),
                     labelText: 'Password',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
-                  context.push('/home');
+                    context.push('/home');
                   },
                   child: Text('Login'),
+
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 10),
                 RichText(

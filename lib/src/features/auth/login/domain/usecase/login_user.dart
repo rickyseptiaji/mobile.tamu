@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/auth/data/repositories/auth_repository.dart';
-import 'package:buku_tamu/src/features/auth/data/models/User.dart';
+import 'package:buku_tamu/src/features/auth/login/data/repositories/auth_repository.dart';
+import 'package:buku_tamu/src/features/auth/login/data/models/User.dart';
 
 class LoginUser {
   final AuthRepository authRepository;

@@ -25,19 +25,19 @@ class _GuestScreenState extends State<GuestScreen> {
   Key countryPickerKey = UniqueKey();
 
   void resetForm() {
-  setState(() {
-    companyController.clear();
-    nameController.clear();
-    emailController.clear();
-    phoneController.clear();
-    descriptionController.clear();
+    setState(() {
+      companyController.clear();
+      nameController.clear();
+      emailController.clear();
+      phoneController.clear();
+      descriptionController.clear();
 
-    selectedTo = null;
-    countryCode = '+62';
-    countryPickerKey = UniqueKey();
+      selectedTo = null;
+      countryCode = '+62';
+      countryPickerKey = UniqueKey();
 
-    formKey.currentState?.reset();
-  });
+      formKey.currentState?.reset();
+    });
   }
 
   @override
@@ -218,7 +218,13 @@ class _GuestScreenState extends State<GuestScreen> {
                           },
                     icon: const Icon(Icons.send),
                     label: state is GuestLoadingState
-                        ? const CircularProgressIndicator(color: Colors.white)
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: const CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
                         : const Text('Kirim'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),

@@ -1,3 +1,4 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,9 +15,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController fullNameController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-
+  String countryCode = '+62';
+  Key countryPickerKey = UniqueKey();
   bool isPasswordVisible = false;
 
   void togglePasswordVisibility() {
@@ -25,16 +27,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
-  void register() async {
-
-  }
+  void register() async {}
 
   @override
   void dispose() {
     emailController.dispose();
     fullNameController.dispose();
     companyNameController.dispose();
-    phoneNumberController.dispose();
+    phoneController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -81,42 +81,94 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
                     labelText: 'Email',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 TextFormField(
                   controller: fullNameController,
                   keyboardType: TextInputType.name,
                   decoration: InputDecoration(
-                    labelText: 'Name',
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                    labelText: 'Nama Lengkap',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 TextFormField(
                   controller: companyNameController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Instansi',
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                    labelText: 'Nama Perusahaan',
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: phoneNumberController,
-                  keyboardType: TextInputType.phone,
-                  decoration: InputDecoration(
-                    labelText: 'No. Telepon',
-                    border: OutlineInputBorder(),
-                  ),
+                SizedBox(height: 24),
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      child: TextFormField(
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Kode Negara',
+                          filled: true,
+                          fillColor: const Color(
+                            0xFFEDF5F4,
+                          ).withValues(alpha: 0.8),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: CountryCodePicker(
+                            key: countryPickerKey,
+                            onChanged: (e) {
+                              setState(() {
+                                countryCode = e.dialCode ?? '+62';
+                              });
+                            },
+                            initialSelection: countryCode,
+                            favorite: ['+62', 'ID'],
+                            showCountryOnly: false,
+                            showOnlyCountryWhenClosed: false,
+                            alignLeft: false,
+                            padding: EdgeInsets.zero,
+                            textStyle: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        validator: (value) =>
+                            phoneController.text.isEmpty ? '' : null,
+                      ),
+                    ),
+
+                    const SizedBox(width: 16),
+                    Flexible(
+                      flex: 2,
+                      child: TextFormField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                          labelText: 'No Telp',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Nomor telepon wajib diisi' : null,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 TextFormField(
                   controller: passwordController,
                   obscureText: !isPasswordVisible,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
                     labelText: 'Password',
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -129,8 +181,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 24),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
                   onPressed: () {
                     register();
                   },
