@@ -86,13 +86,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     context.push('/home');
                   },
-                  child: Text('Login'),
 
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
+                  child: Text('Login'),
                 ),
                 SizedBox(height: 10),
                 RichText(
