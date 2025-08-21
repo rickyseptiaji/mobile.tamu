@@ -1,13 +1,10 @@
 import 'package:buku_tamu/src/features/auth/presentation/pages/LoginScreen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/RegisterScreen.dart';
-import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_bloc.dart';
-import 'package:buku_tamu/src/features/guest/presentation/pages/guest.dart';
+import 'package:buku_tamu/src/features/guest/presentation/pages/guest_screen.dart';
 import 'package:buku_tamu/src/features/home/presentation/pages/DetailRecentVisitor.dart';
 import 'package:buku_tamu/src/features/home/presentation/pages/FormGuest.dart';
-
 import 'package:buku_tamu/src/shared/presentation/bottomBarNavigation.dart';
 import 'package:buku_tamu/src/shared/presentation/mainLayout.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
@@ -16,10 +13,7 @@ final GoRouter router = GoRouter(
       path: '/',
       builder: (context, state) => MainLayout(
         title: 'Guest',
-        child: BlocProvider(
-          create: (_) => GuestBloc(),
-          child: const GuestScreen(),
-        ),
+        child: const GuestScreen(),
       ),
     ),
     GoRoute(

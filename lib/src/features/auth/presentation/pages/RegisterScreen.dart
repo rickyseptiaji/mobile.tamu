@@ -1,6 +1,9 @@
+import 'package:buku_tamu/src/features/auth/presentation/bloc/register_bloc.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/register_state.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -27,7 +30,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
   }
 
-  void register() async {}
 
   @override
   void dispose() {
@@ -42,7 +44,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: BlocListener<RegisterBloc,RegisterState>(
+        listener: (context, state) {
+          if (state is RegisterLoading) {
+            // Show loading indicator
+          } else if (state is RegisterSuccess) {
+            // Navigate to home or success screen
+            context.go('/home');
+          } else if (state is RegisterFailure) {
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
+        child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -189,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   onPressed: () {
-                    register();
+      
                   },
                   child: Text('Register'),
                 ),
@@ -215,6 +231,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
+        ),
+  
     );
   }
 }

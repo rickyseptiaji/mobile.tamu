@@ -1,31 +1,36 @@
-import 'package:equatable/equatable.dart';
+class GuestEvent {}
 
-abstract class GuestEvent extends Equatable {
-  const GuestEvent();
+class GuestCompanyChanged extends GuestEvent {
+  final String companyName;
 
-  @override
-  List<Object?> get props => [];
+ GuestCompanyChanged(this.companyName);
 }
 
-class GuestSubmitEvent extends GuestEvent {
-  final String company;
-  final String name;
+class GuestFullNameChanged extends GuestEvent {
+  final String fullName;
+
+  GuestFullNameChanged(this.fullName);
+}
+class GuestEmailChanged extends GuestEvent {
   final String email;
+
+  GuestEmailChanged(this.email);
+}
+class GuestPhoneChanged extends GuestEvent {
   final String countryCode;
   final String phone;
-  final String description;
-  final String? to;
 
-  const GuestSubmitEvent({
-    required this.company,
-    required this.name,
-    required this.email,
-    required this.countryCode,
-    required this.phone,
-    required this.description,
-    this.to,
-  });
-
-  @override
-  List<Object?> get props => [company, name, email, phone, description, to];
+  GuestPhoneChanged(this.countryCode, this.phone);
 }
+class GuestToEmployeeChanged extends GuestEvent {
+  final String toEmployee;
+
+  GuestToEmployeeChanged(this.toEmployee);
+}
+class GuestDescriptionChanged extends GuestEvent {
+  final String description;
+
+  GuestDescriptionChanged(this.description);
+}
+class LoadEmployees extends GuestEvent {}
+class GuestSubmitEvent extends GuestEvent {}

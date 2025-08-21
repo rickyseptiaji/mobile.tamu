@@ -1,15 +1,16 @@
-import 'package:buku_tamu/src/features/auth/domain/entity/user_entity.dart';
+import 'package:buku_tamu/src/features/auth/data/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-abstract class AuthDataSource {
-  Future<UserEntity> login(String email, String password);
+abstract class AuthRemoteDataSource {
+  Future<UserModel> login(String email, String password);
 
-  Future<void> register(String email, String password, String fullName);
+  Future<UserModel> register(String email, String password);
 
   Future<void> signOut();
 
   Future<bool> isSignedIn();
 
-  Future<UserEntity?> getCurrentUser();
+  Future<UserModel?> getCurrentUser();
 
   Future<void> updateUserProfile(
     String fullName,
@@ -18,17 +19,17 @@ abstract class AuthDataSource {
   );
 }
 
-class AuthDataSourceImpl implements AuthDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   // Implementation of the methods would go here, typically involving network calls or local storage access.
 
   @override
-  Future<UserEntity> login(String email, String password) {
+  Future<UserModel> login(String email, String password) {
     // TODO: implement login
     throw UnimplementedError();
   }
 
   @override
-  Future<UserEntity?> getCurrentUser() {
+  Future<UserModel?> getCurrentUser() {
     // TODO: implement getCurrentUser
     throw UnimplementedError();
   }
@@ -40,9 +41,24 @@ class AuthDataSourceImpl implements AuthDataSource {
   }
 
   @override
-  Future<void> register(String email, String password, String fullName) {
-    // TODO: implement register
-    throw UnimplementedError();
+  Future<UserModel> register(String email, String password) async {
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      final user = userCredential.user;
+      if (user == null) {
+        throw Exception('User registration failed');
+      }
+
+      return UserModel(
+        id: user.uid,
+        name: user.displayName ?? '',
+        email: user.email ?? '',
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle registration errors
+      throw Exception('Registration failed: ${e.message}');
+    }
   }
 
   @override
