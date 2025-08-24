@@ -33,9 +33,14 @@ class GuestBloc extends Bloc<GuestEvent, GuestState> {
       emit(state.copyWith(employeesLoading: true));
       try {
         final snapshot = await firestore.collection('employees').get();
-        final employees = snapshot.docs
-            .map((doc) => doc['fullName'] as String)
-            .toList();
+        final employees = snapshot.docs.map((doc) {
+          final data = doc.data();
+          return {
+            'id': doc.id,
+            ...data, 
+          };
+        }).toList();
+
         emit(state.copyWith(employees: employees, employeesLoading: false));
       } catch (e) {
         emit(state.copyWith(employeesLoading: false));
@@ -57,12 +62,8 @@ class GuestBloc extends Bloc<GuestEvent, GuestState> {
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        emit(
-          state.copyWith(
-            isLoading: false,
-            success: true,
-          ),
-        );
+        emit(state.copyWith(isLoading: false, success: true));
+        emit(state.copyWith(success: false));
       } catch (e) {
         emit(state.copyWith(isLoading: false, error: e.toString()));
       }

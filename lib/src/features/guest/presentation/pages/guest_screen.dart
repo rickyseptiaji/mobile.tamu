@@ -15,7 +15,7 @@ class _GuestScreenState extends State<GuestScreen> {
   @override
   void initState() {
     super.initState();
-  context.read<GuestBloc>().add(LoadEmployees());
+    context.read<GuestBloc>().add(LoadEmployees());
   }
 
   @override

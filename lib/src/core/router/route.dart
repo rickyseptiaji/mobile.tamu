@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/auth/presentation/pages/LoginScreen.dart';
-import 'package:buku_tamu/src/features/auth/presentation/pages/RegisterScreen.dart';
+import 'package:buku_tamu/src/features/auth/presentation/pages/login_screen.dart';
+import 'package:buku_tamu/src/features/auth/presentation/pages/register_screen.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest_screen.dart';
 import 'package:buku_tamu/src/features/home/presentation/pages/DetailRecentVisitor.dart';
 import 'package:buku_tamu/src/features/home/presentation/pages/FormGuest.dart';

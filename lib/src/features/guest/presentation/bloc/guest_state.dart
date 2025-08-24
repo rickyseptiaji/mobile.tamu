@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class GuestState extends Equatable {
-  final List<String> employees;
+  final List<Map<String, dynamic>> employees;
   final bool employeesLoading;
   final String companyName;
   final String fullName;
@@ -9,7 +9,7 @@ class GuestState extends Equatable {
   final String countryCode;
   final String phone;
   final String toEmployee;
-  final String description;
+   final String description;
   final bool isLoading;
   final String? error;
   final bool success;
@@ -30,7 +30,7 @@ class GuestState extends Equatable {
   });
 
   GuestState copyWith({
-    List<String>? employees,
+    List<Map<String, dynamic>>? employees,
     bool? employeesLoading,
     String? companyName,
     String? fullName,

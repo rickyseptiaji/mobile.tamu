@@ -10,59 +10,106 @@ class GuestForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<GuestBloc, GuestState>(
-      listener: (context, state) {
-        if (state.success) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<GuestBloc, GuestState>(
+          listenWhen: (previous, current) =>
+              previous.error != current.error && current.error != null,
+          listener: (context, state) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Data berhasil dikirim')),
+              SnackBar(
+                content: Text(state.error ?? 'Terjadi kesalahan'),
+                backgroundColor: Colors.red,
+              ),
             );
-          });
-        } else if (state.error != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          },
+        ),
+        BlocListener<GuestBloc, GuestState>(
+          listenWhen: (previous, current) =>
+              previous.success != current.success && current.success,
+          listener: (context, state) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.error ?? 'Terjadi kesalahan')),
+              const SnackBar(
+                content: Text('Data tamu berhasil dikirim'),
+                backgroundColor: Colors.green,
+              ),
             );
-          });
-        }
-      },
-      builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Isi Form Tamu',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          },
+        ),
+      ],
+      child: BlocBuilder<GuestBloc, GuestState>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Isi Form Tamu',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+
+              companyName(context, state),
+              const SizedBox(height: 16),
+
+              fullName(context, state),
+              const SizedBox(height: 16),
+
+              email(context, state),
+              const SizedBox(height: 16),
+              phone(context, state),
+
+              const SizedBox(height: 16),
+              toEmployee(context, state),
+              const SizedBox(height: 16),
+
+              description(context, state),
+              const SizedBox(height: 24),
+
+              submitButton(context, state),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  DropdownMenu<String> toEmployee(BuildContext context, GuestState state) {
+    return DropdownMenu<String>(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+        border: OutlineInputBorder(),
+      ),
+      width: MediaQuery.of(context).size.width,
+      enableFilter: true,
+      requestFocusOnTap: true,
+      leadingIcon: const Icon(Icons.search),
+      initialSelection: state.toEmployee.isEmpty ? null : state.toEmployee,
+      label: const Text('Kepada'),
+      hintText: 'Pilih pegawai',
+      dropdownMenuEntries: state.employees
+          .map(
+            (e) => DropdownMenuEntry<String>(
+              value: e['id'] as String,
+              label: e['fullName'] as String,
             ),
-            const SizedBox(height: 20),
-
-            companyName(state),
-            const SizedBox(height: 16),
-
-            fullName(state),
-            const SizedBox(height: 16),
-
-            email(state),
-            const SizedBox(height: 16),
-            phone(context, state),
-
-            const SizedBox(height: 16),
-            toEmployee(context, state),
-            const SizedBox(height: 16),
-
-            description(state),
-            const SizedBox(height: 24),
-
-            submitButton(state),
-          ],
-        );
+          )
+          .toList(),
+      onSelected: (value) {
+        BlocProvider.of<GuestBloc>(
+          context,
+        ).add(GuestToEmployeeChanged(value ?? ''));
       },
     );
   }
 
-  ElevatedButton submitButton(GuestState state) {
+  ElevatedButton submitButton(context, GuestState state) {
     return ElevatedButton.icon(
-      onPressed: () {},
+      onPressed: () {
+        if (!state.isLoading) {
+          BlocProvider.of<GuestBloc>(context).add(GuestSubmitEvent());
+        }
+      },
       icon: const Icon(Icons.send),
       label: state.isLoading
           ? SizedBox(
@@ -79,8 +126,11 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField description(GuestState state) {
+  TextFormField description(BuildContext context, GuestState state) {
     return TextFormField(
+      onChanged: (value) {
+        context.read<GuestBloc>().add(GuestDescriptionChanged(value));
+      },
       maxLines: 5,
       decoration: InputDecoration(
         filled: true,
@@ -92,28 +142,7 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  DropdownButtonFormField<String> toEmployee(context, GuestState state) {
-    return DropdownButtonFormField<String>(
-      value: state.toEmployee.isEmpty ? null : state.toEmployee,
-      items: state.employees
-          .map(
-            (employee) =>
-                DropdownMenuItem(value: employee, child: Text(employee)),
-          )
-          .toList(),
-      onChanged: (v) =>
-          context.read<GuestBloc>().add(GuestToEmployeeChanged(v ?? '')),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
-        labelText: 'Kepada',
-        border: OutlineInputBorder(),
-      ),
-      validator: (value) => value == null ? 'Pilih salah satu tujuan' : null,
-    );
-  }
-
-  Row phone(context, GuestState state) {
+  Row phone(BuildContext context, GuestState state) {
     return Row(
       children: [
         Flexible(
@@ -147,6 +176,11 @@ class GuestForm extends StatelessWidget {
         Flexible(
           flex: 2,
           child: TextFormField(
+            onChanged: (value) {
+              context.read<GuestBloc>().add(
+                GuestPhoneChanged(state.countryCode, value),
+              );
+            },
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               filled: true,
@@ -162,8 +196,11 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField email(GuestState state) {
+  TextFormField email(BuildContext context, GuestState state) {
     return TextFormField(
+      onChanged: (value) {
+        context.read<GuestBloc>().add(GuestEmailChanged(value));
+      },
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         filled: true,
@@ -175,8 +212,11 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField fullName(GuestState state) {
+  TextFormField fullName(BuildContext context, GuestState state) {
     return TextFormField(
+      onChanged: (value) {
+        context.read<GuestBloc>().add(GuestFullNameChanged(value));
+      },
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
@@ -187,8 +227,11 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField companyName(GuestState state) {
+  TextFormField companyName(BuildContext context, GuestState state) {
     return TextFormField(
+      onChanged: (value) {
+        context.read<GuestBloc>().add(GuestCompanyChanged(value));
+      },
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFEDF5F4),
