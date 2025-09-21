@@ -1,4 +1,4 @@
-import 'package:buku_tamu/src/features/guest/domain/entity/guest.dart';
+import 'package:buku_tamu/src/features/guest/domain/entity/guest_entity.dart';
 
 class GuestModel extends GuestEntity {
   GuestModel({

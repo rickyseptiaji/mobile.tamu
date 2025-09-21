@@ -5,75 +5,79 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class GuestForm extends StatelessWidget {
+class GuestForm extends StatefulWidget {
   const GuestForm({super.key});
 
   @override
+  State<GuestForm> createState() => _GuestFormState();
+}
+
+class _GuestFormState extends State<GuestForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _companyController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  String? selectedEmployeeId;
+  String _countryCode = '+62';
+
+  @override
   Widget build(BuildContext context) {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<GuestBloc, GuestState>(
-          listenWhen: (previous, current) =>
-              previous.error != current.error && current.error != null,
-          listener: (context, state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.error ?? 'Terjadi kesalahan'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          },
-        ),
-        BlocListener<GuestBloc, GuestState>(
-          listenWhen: (previous, current) =>
-              previous.success != current.success && current.success,
-          listener: (context, state) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Data tamu berhasil dikirim'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          },
-        ),
-      ],
+    return BlocListener<GuestBloc, GuestState>(
+      listener: (context, state) {
+        if (state is GuestError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+          );
+        } else if (state is GuestSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Tamu berhasil ditambahkan'),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      },
       child: BlocBuilder<GuestBloc, GuestState>(
         builder: (context, state) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Text(
-                'Isi Form Tamu',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          if (state is GuestLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is GuestLoaded) {
+            return Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Isi Form Tamu',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  companyName(state),
+                  const SizedBox(height: 16),
+                  fullName(state),
+                  const SizedBox(height: 16),
+                  email(state),
+                  const SizedBox(height: 16),
+                  phone(state),
+                  const SizedBox(height: 16),
+                  toEmployee(state),
+                  const SizedBox(height: 16),
+                  description(state),
+                  const SizedBox(height: 24),
+                  submitButton(state),
+                ],
               ),
-              const SizedBox(height: 20),
-
-              companyName(context, state),
-              const SizedBox(height: 16),
-
-              fullName(context, state),
-              const SizedBox(height: 16),
-
-              email(context, state),
-              const SizedBox(height: 16),
-              phone(context, state),
-
-              const SizedBox(height: 16),
-              toEmployee(context, state),
-              const SizedBox(height: 16),
-
-              description(context, state),
-              const SizedBox(height: 24),
-
-              submitButton(context, state),
-            ],
-          );
+            );
+          }
+          return Center(child: const Text('Something went wrong'));
         },
       ),
     );
   }
 
-  DropdownMenu<String> toEmployee(BuildContext context, GuestState state) {
+  DropdownMenu<String> toEmployee(state) {
     return DropdownMenu<String>(
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -84,38 +88,48 @@ class GuestForm extends StatelessWidget {
       enableFilter: true,
       requestFocusOnTap: true,
       leadingIcon: const Icon(Icons.search),
-      initialSelection: state.toEmployee.isEmpty ? null : state.toEmployee,
       label: const Text('Kepada'),
       hintText: 'Pilih pegawai',
+      initialSelection: state.employees.isNotEmpty
+          ? state.employees[0]['id']
+          : null,
       dropdownMenuEntries: state.employees
-          .map(
-            (e) => DropdownMenuEntry<String>(
-              value: e['id'] as String,
-              label: e['fullName'] as String,
+          .map<DropdownMenuEntry<String>>(
+            (employee) => DropdownMenuEntry<String>(
+              value: employee['id'],
+              label: employee['fullName'],
             ),
           )
           .toList(),
       onSelected: (value) {
-        BlocProvider.of<GuestBloc>(
-          context,
-        ).add(GuestToEmployeeChanged(value ?? ''));
+        setState(() {
+          selectedEmployeeId = value;
+        });
       },
     );
   }
 
-  ElevatedButton submitButton(context, GuestState state) {
+  ElevatedButton submitButton(state) {
     return ElevatedButton.icon(
       onPressed: () {
-        if (!state.isLoading) {
-          BlocProvider.of<GuestBloc>(context).add(GuestSubmitEvent());
+        if (_formKey.currentState!.validate()) {
+          context.read<GuestBloc>().add(
+            SubmitGuestEvent(
+              companyName: _companyController.text,
+              fullName: _fullNameController.text,
+              email: _emailController.text,
+              countryCode: _countryCode,
+              phone: '$_countryCode${_phoneController.text}',
+              toEmployee: selectedEmployeeId ?? '',
+              description: _descriptionController.text,
+            ),
+          );
         }
       },
       icon: const Icon(Icons.send),
-      label: state.isLoading
-          ? SizedBox(
-              height: 20,
-              width: 20,
-              child: const CircularProgressIndicator(color: Colors.white),
+      label: state is GuestLoading
+          ? const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             )
           : const Text('Kirim'),
       style: ElevatedButton.styleFrom(
@@ -126,11 +140,9 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField description(BuildContext context, GuestState state) {
+  TextFormField description(state) {
     return TextFormField(
-      onChanged: (value) {
-        context.read<GuestBloc>().add(GuestDescriptionChanged(value));
-      },
+      controller: _descriptionController,
       maxLines: 5,
       decoration: InputDecoration(
         filled: true,
@@ -142,33 +154,54 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  Row phone(BuildContext context, GuestState state) {
+  Row phone(state) {
     return Row(
       children: [
         Flexible(
           flex: 1,
-          child: TextFormField(
-            readOnly: true,
-            decoration: InputDecoration(
-              labelText: 'Kode Negara',
-              filled: true,
-              fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
-              border: const OutlineInputBorder(),
-              suffixIcon: CountryCodePicker(
-                onChanged: (c) => context.read<GuestBloc>().add(
-                  GuestPhoneChanged(c.dialCode ?? '+62', state.phone),
+          child: FormField<String>(
+            validator: (value) {
+              if (_countryCode.isEmpty) {
+                return 'Kode negara wajib diisi';
+              }
+              return null;
+            },
+            builder: (field) {
+              return InputDecorator(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                  labelText: 'Kode Negara',
+                  border: const OutlineInputBorder(),
+                  errorText: field.errorText,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
                 ),
-                initialSelection: state.countryCode,
-                favorite: ['+62', 'ID'],
-                showCountryOnly: false,
-                showOnlyCountryWhenClosed: false,
-                alignLeft: false,
-                padding: EdgeInsets.zero,
-                textStyle: const TextStyle(fontSize: 14),
-              ),
-            ),
-            validator: (value) =>
-                value!.isEmpty ? 'Kode negara wajib diisi' : null,
+                child: SizedBox(
+                  height: 44,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: CountryCodePicker(
+                      onChanged: (country) {
+                        setState(() {
+                          _countryCode = country.dialCode ?? '';
+                        });
+                        field.didChange(_countryCode);
+                      },
+                      initialSelection: _countryCode,
+                      favorite: ['+62', 'ID'],
+                      showCountryOnly: false,
+                      showOnlyCountryWhenClosed: false,
+                      alignLeft: false,
+                      padding: EdgeInsets.zero,
+                      textStyle: const TextStyle(fontSize: 14),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
 
@@ -176,11 +209,7 @@ class GuestForm extends StatelessWidget {
         Flexible(
           flex: 2,
           child: TextFormField(
-            onChanged: (value) {
-              context.read<GuestBloc>().add(
-                GuestPhoneChanged(state.countryCode, value),
-              );
-            },
+            controller: _phoneController,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               filled: true,
@@ -196,11 +225,9 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField email(BuildContext context, GuestState state) {
+  TextFormField email(state) {
     return TextFormField(
-      onChanged: (value) {
-        context.read<GuestBloc>().add(GuestEmailChanged(value));
-      },
+      controller: _emailController,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         filled: true,
@@ -212,11 +239,9 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField fullName(BuildContext context, GuestState state) {
+  TextFormField fullName(state) {
     return TextFormField(
-      onChanged: (value) {
-        context.read<GuestBloc>().add(GuestFullNameChanged(value));
-      },
+      controller: _fullNameController,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
@@ -227,11 +252,9 @@ class GuestForm extends StatelessWidget {
     );
   }
 
-  TextFormField companyName(BuildContext context, GuestState state) {
+  TextFormField companyName(state) {
     return TextFormField(
-      onChanged: (value) {
-        context.read<GuestBloc>().add(GuestCompanyChanged(value));
-      },
+      controller: _companyController,
       decoration: InputDecoration(
         filled: true,
         fillColor: Color(0xFFEDF5F4),

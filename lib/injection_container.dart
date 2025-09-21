@@ -1,3 +1,5 @@
+import 'package:buku_tamu/src/features/auth/presentation/bloc/login_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -12,12 +14,14 @@ final sl = GetIt.instance;
 
 Future<void> init() async {
   // External (Firebase)
+  sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
 
   // Bloc
-  sl.registerFactory(() => RegisterBloc(sl()));
+  sl.registerFactory(() => RegisterBloc(sl(), sl()));
+  sl.registerFactory(() => LoginBloc(sl()));
   sl.registerFactory(() => GuestBloc(sl()));
-
+  
   // UseCase
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
 

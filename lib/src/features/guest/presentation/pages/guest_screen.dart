@@ -14,10 +14,9 @@ class GuestScreen extends StatefulWidget {
 class _GuestScreenState extends State<GuestScreen> {
   @override
   void initState() {
-    super.initState();
-    context.read<GuestBloc>().add(LoadEmployees());
+  super.initState();
+  context.read<GuestBloc>().add(LoadEmployeesEvent());
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

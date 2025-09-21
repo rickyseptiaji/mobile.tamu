@@ -4,7 +4,7 @@ import 'package:buku_tamu/src/features/auth/domain/repositories/auth_repository.
 class RegisterUseCase {
   final AuthRepository authRepository;
   RegisterUseCase(this.authRepository);
-  Future<UserEntity> register(String email, String password) async {
+  Future<UserEntity> call(String email, String password) async {
     return await authRepository.register(email, password);
   }
 }

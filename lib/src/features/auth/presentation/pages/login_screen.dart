@@ -1,6 +1,5 @@
-import 'package:flutter/gestures.dart';
+import 'package:buku_tamu/src/features/auth/presentation/pages/login_form.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,13 +9,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isPasswordVisible = false;
-
-  void togglePasswordVisibility() {
-    setState(() {
-      isPasswordVisible = !isPasswordVisible;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,96 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blueAccent,
-                      ),
-                      child: Icon(Icons.person, size: 50, color: Colors.white),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Welcome Back',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Please enter your credentials to login',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 24),
-                TextFormField(
-                  obscureText: !isPasswordVisible,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        isPasswordVisible
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                      ),
-                      onPressed: togglePasswordVisibility,
-                    ),
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 24),
-                ElevatedButton(
-                  onPressed: () {
-                    context.push('/home');
-                  },
-
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: Text('Login'),
-                ),
-                SizedBox(height: 10),
-                RichText(
-                  text: TextSpan(
-                    text: 'Don\'t have an account? ',
-                    style: TextStyle(color: Colors.black),
-                    children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style: TextStyle(color: Colors.blue),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            context.push('/register');
-                          },
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          child: LoginForm()
         ),
       ),
     );
