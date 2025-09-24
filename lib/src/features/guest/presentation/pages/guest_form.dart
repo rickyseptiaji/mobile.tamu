@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GuestForm extends StatefulWidget {
-  const GuestForm({super.key});
+  final List<Map<String, dynamic>> employees;
+  const GuestForm({super.key, required this.employees});
 
   @override
   State<GuestForm> createState() => _GuestFormState();
@@ -21,58 +22,42 @@ class _GuestFormState extends State<GuestForm> {
   final TextEditingController _descriptionController = TextEditingController();
   String? selectedEmployeeId;
   String _countryCode = '+62';
+@override
+void initState() {
+  super.initState();
+  if (widget.employees.isNotEmpty) {
+    selectedEmployeeId = widget.employees.first['id'].toString();
+  } else {
+    selectedEmployeeId = null; // fallback kalau list kosong
+  }
+}
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<GuestBloc, GuestState>(
-      listener: (context, state) {
-        if (state is GuestError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
-          );
-        } else if (state is GuestSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Tamu berhasil ditambahkan'),
-              backgroundColor: Colors.green,
-            ),
-          );
-        }
-      },
-      child: BlocBuilder<GuestBloc, GuestState>(
-        builder: (context, state) {
-          if (state is GuestLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is GuestLoaded) {
-            return Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Isi Form Tamu',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  companyName(state),
-                  const SizedBox(height: 16),
-                  fullName(state),
-                  const SizedBox(height: 16),
-                  email(state),
-                  const SizedBox(height: 16),
-                  phone(state),
-                  const SizedBox(height: 16),
-                  toEmployee(state),
-                  const SizedBox(height: 16),
-                  description(state),
-                  const SizedBox(height: 24),
-                  submitButton(state),
-                ],
-              ),
-            );
-          }
-          return Center(child: const Text('Something went wrong'));
-        },
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            'Isi Form Tamu',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          companyName(),
+          const SizedBox(height: 16),
+          fullName(),
+          const SizedBox(height: 16),
+          email(),
+          const SizedBox(height: 16),
+          phone(),
+          const SizedBox(height: 16),
+          toEmployee(widget),
+          const SizedBox(height: 16),
+          description(),
+          const SizedBox(height: 24),
+          submitButton(),
+        ],
       ),
     );
   }
@@ -109,38 +94,56 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  ElevatedButton submitButton(state) {
-    return ElevatedButton.icon(
-      onPressed: () {
-        if (_formKey.currentState!.validate()) {
-          context.read<GuestBloc>().add(
-            SubmitGuestEvent(
-              companyName: _companyController.text,
-              fullName: _fullNameController.text,
-              email: _emailController.text,
-              countryCode: _countryCode,
-              phone: '$_countryCode${_phoneController.text}',
-              toEmployee: selectedEmployeeId ?? '',
-              description: _descriptionController.text,
+  Widget submitButton() {
+    return BlocBuilder<GuestBloc, GuestState>(
+      builder: (context, state) {
+        final isLoading = state is FormSubmitting;
+
+        return ElevatedButton.icon(
+          onPressed: isLoading
+              ? null
+              : () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<GuestBloc>().add(
+                      SubmitGuestEvent(
+                        companyName: _companyController.text,
+                        fullName: _fullNameController.text,
+                        email: _emailController.text,
+                        countryCode: _countryCode,
+                        phone: '$_countryCode${_phoneController.text}',
+                        toEmployee: selectedEmployeeId ?? '',
+                        description: _descriptionController.text,
+                      ),
+                    );
+                  }
+                },
+          icon: const Icon(Icons.send),
+          label: isLoading
+              ? const SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : const Text('Kirim'),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            textStyle: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
-          );
-        }
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
       },
-      icon: const Icon(Icons.send),
-      label: state is GuestLoading
-          ? const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            )
-          : const Text('Kirim'),
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
     );
   }
 
-  TextFormField description(state) {
+  TextFormField description() {
     return TextFormField(
       controller: _descriptionController,
       maxLines: 5,
@@ -154,7 +157,7 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  Row phone(state) {
+  Row phone() {
     return Row(
       children: [
         Flexible(
@@ -225,7 +228,7 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  TextFormField email(state) {
+  TextFormField email() {
     return TextFormField(
       controller: _emailController,
       keyboardType: TextInputType.emailAddress,
@@ -239,7 +242,7 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  TextFormField fullName(state) {
+  TextFormField fullName() {
     return TextFormField(
       controller: _fullNameController,
       decoration: InputDecoration(
@@ -252,7 +255,7 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  TextFormField companyName(state) {
+  TextFormField companyName() {
     return TextFormField(
       controller: _companyController,
       decoration: InputDecoration(

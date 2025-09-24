@@ -4,12 +4,13 @@ abstract class GuestState extends Equatable {
   const GuestState();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class GuestInitial extends GuestState {
   const GuestInitial();
 }
+
 class GuestLoading extends GuestState {
   const GuestLoading();
 }
@@ -17,6 +18,9 @@ class GuestLoading extends GuestState {
 class GuestSuccess extends GuestState {
   final String message;
   const GuestSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
 }
 
 class GuestError extends GuestState {
@@ -27,10 +31,22 @@ class GuestError extends GuestState {
   @override
   List<Object> get props => [message];
 }
+
 class GuestLoaded extends GuestState {
-  final  List<Map<String, dynamic>> employees;
+  final List<Map<String, dynamic>> employees;
   const GuestLoaded(this.employees);
   @override
   List<Object> get props => [employees];
 }
 
+class EmployeesLoading extends GuestState {}
+
+class FormSubmitting extends GuestState {}
+
+class FormError extends GuestState {
+  final String message;
+  const FormError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

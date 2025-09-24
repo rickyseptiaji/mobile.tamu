@@ -5,9 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GuestBloc extends Bloc<GuestEvent, GuestState> {
   final FirebaseFirestore firestore;
-  GuestBloc(this.firestore) : super(const GuestInitial()) {
+  GuestBloc(this.firestore) : super(GuestInitial()) {
     on<SubmitGuestEvent>((event, emit) async {
-      emit(const GuestLoading());
+      emit(FormSubmitting());
       try {
         await firestore.collection('guests').add({
           'companyName': event.companyName,
@@ -25,7 +25,7 @@ class GuestBloc extends Bloc<GuestEvent, GuestState> {
       }
     });
     on<LoadEmployeesEvent>((event, emit) async {
-      emit(const GuestLoading());
+      emit(EmployeesLoading());
       try {
         final querySnapshot = await firestore.collection('employees').get();
         final employees = querySnapshot.docs
