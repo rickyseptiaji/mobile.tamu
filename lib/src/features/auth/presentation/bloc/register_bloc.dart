@@ -17,17 +17,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
             final uuid = userCredential.user?.uid;
             if (uuid != null) {
              await firestore.collection('users').doc(uuid).set({
-              'id': uuid,
+              'userId': uuid,
               'name': event.fullName,
               'companyName': event.companyName,
               'countryCode': event.countryCode,
               'phoneNumber': event.phone,
+              'role': 'user',
               'createdAt': FieldValue.serverTimestamp(),
             });
             }
         emit(RegisterSuccess('User registered successfully'));
-      } catch (e) {
-        emit(RegisterError(e.toString()));
+      } on FirebaseAuthException catch (e) {
+        emit(RegisterError(e.message ?? 'An unknown error occurred'));
       }
     });
   }

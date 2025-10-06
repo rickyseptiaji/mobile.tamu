@@ -14,3 +14,6 @@ class LoginError extends LoginState {
   final String message;
   LoginError(this.message);
 }
+
+class LoginAuthenticated extends LoginState {}
+class LoginUnauthenticated extends LoginState {}

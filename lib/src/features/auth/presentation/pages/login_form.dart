@@ -18,6 +18,7 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool isPasswordVisible = false;
+
   void togglePasswordVisibility() {
     setState(() {
       isPasswordVisible = !isPasswordVisible;

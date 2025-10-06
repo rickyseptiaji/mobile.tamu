@@ -37,6 +37,9 @@ class _RegisterFormState extends State<RegisterForm> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(const SnackBar(content: Text("Register sukses")));
+        } else if (state is RegisterError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: BlocBuilder<RegisterBloc, RegisterState>(
@@ -102,7 +105,7 @@ class _RegisterFormState extends State<RegisterForm> {
             style: TextStyle(color: Colors.blue),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                // context.push('/login');
+                context.push('/login');
               },
           ),
         ],
