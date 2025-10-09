@@ -22,8 +22,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
 
         emit(LoginSuccess('User logged in successfully'));
-      } catch (e) {
-        emit(LoginError(e.toString()));
+      } on FirebaseAuthException catch (e) {
+        emit(LoginError(e.message ?? 'An unknown error occurred'));
       }
     });
 

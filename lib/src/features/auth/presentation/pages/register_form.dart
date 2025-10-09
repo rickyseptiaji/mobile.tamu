@@ -1,6 +1,5 @@
 import 'package:buku_tamu/src/features/auth/presentation/bloc/register_bloc.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/register_event.dart';
-import 'package:buku_tamu/src/features/auth/presentation/bloc/register_state.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -29,67 +28,55 @@ class _RegisterFormState extends State<RegisterForm> {
       isPasswordVisible = !isPasswordVisible;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocListener<RegisterBloc, RegisterState>(
-      listener: (context, state) {
-        if (state is RegisterSuccess) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text("Register sukses")));
-        } else if (state is RegisterError) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(state.message)));
-        }
-      },
-      child: BlocBuilder<RegisterBloc, RegisterState>(
-        builder: (context, state) {
-          return Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blueAccent,
-                      ),
-                      child: Icon(Icons.person, size: 50, color: Colors.white),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Welcome Back',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Please enter your credentials to sign up',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                    SizedBox(height: 20),
-                  ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Column(
+            children: [
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.blueAccent,
                 ),
-                email(),
-                SizedBox(height: 24),
-                fullName(),
-                SizedBox(height: 24),
-                company(),
-                SizedBox(height: 24),
-                phone(),
-                SizedBox(height: 24),
-                password(),
-                SizedBox(height: 24),
-                submitButton(),
-                SizedBox(height: 10),
-                navigate(),
-              ],
-            ),
-          );
-        },
+                child: Icon(Icons.person, size: 50, color: Colors.white),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Welcome Back',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 10),
+              Text(
+                'Please enter your credentials to sign up',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+          email(),
+          SizedBox(height: 24),
+          fullName(),
+          SizedBox(height: 24),
+          company(),
+          SizedBox(height: 24),
+          phone(),
+          SizedBox(height: 24),
+          password(),
+          SizedBox(height: 24),
+          submitButton(),
+          SizedBox(height: 10),
+          navigate(),
+        ],
       ),
     );
   }
@@ -121,16 +108,15 @@ class _RegisterFormState extends State<RegisterForm> {
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           context.read<RegisterBloc>().add(
-                SubmitRegisterEvent(
-                  email: _emailController.text,
-                  password: _passwordController.text,
-                  fullName: _fullNameController.text,
-                  companyName: _companyController.text,
-                  countryCode: _countryCode,
-                  phone: '$_countryCode${_phoneController.text}',
-                ),
-              );
-              context.push('/login');
+            SubmitRegisterEvent(
+              email: _emailController.text,
+              password: _passwordController.text,
+              fullName: _fullNameController.text,
+              companyName: _companyController.text,
+              countryCode: _countryCode,
+              phone: '$_countryCode${_phoneController.text}',
+            ),
+          );
         }
       },
       child: Text('Register'),
@@ -142,9 +128,12 @@ class _RegisterFormState extends State<RegisterForm> {
       obscureText: !isPasswordVisible,
       controller: _passwordController,
       decoration: InputDecoration(
-        suffixIcon: IconButton(onPressed: togglePasswordVisibility, icon: Icon(
-          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-        )),
+        suffixIcon: IconButton(
+          onPressed: togglePasswordVisibility,
+          icon: Icon(
+            isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+          ),
+        ),
         filled: true,
         fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
         labelText: 'Password',
@@ -154,7 +143,7 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   Row phone() {
-     return Row(
+    return Row(
       children: [
         Flexible(
           flex: 1,
@@ -242,7 +231,6 @@ class _RegisterFormState extends State<RegisterForm> {
       controller: _fullNameController,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
-        
         filled: true,
         fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
         labelText: 'Nama Lengkap',

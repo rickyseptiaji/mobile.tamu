@@ -1,10 +1,10 @@
 import 'package:buku_tamu/src/features/auth/presentation/pages/login_screen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/register_screen.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest_screen.dart';
-import 'package:buku_tamu/src/features/home/presentation/pages/DetailRecentVisitor.dart';
-import 'package:buku_tamu/src/features/home/presentation/pages/FormGuest.dart';
-import 'package:buku_tamu/src/shared/presentation/bottomBarNavigation.dart';
-import 'package:buku_tamu/src/shared/presentation/mainLayout.dart';
+import 'package:buku_tamu/src/features/home/presentation/pages/detail_recent_visitor.dart';
+import 'package:buku_tamu/src/features/home/presentation/pages/form_guest.dart';
+import 'package:buku_tamu/src/shared/presentation/bottom_bar_navigation.dart';
+import 'package:buku_tamu/src/shared/presentation/main_layout.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(

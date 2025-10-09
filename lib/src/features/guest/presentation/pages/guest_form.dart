@@ -28,7 +28,7 @@ void initState() {
   if (widget.employees.isNotEmpty) {
     selectedEmployeeId = widget.employees.first['id'].toString();
   } else {
-    selectedEmployeeId = null; // fallback kalau list kosong
+    selectedEmployeeId = null;
   }
 }
 

@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/home/presentation/pages/HomeScreen.dart';
-import 'package:buku_tamu/src/features/settings/presentation/pages/settingsScreen.dart';
+import 'package:buku_tamu/src/features/home/presentation/pages/home_screen.dart';
+import 'package:buku_tamu/src/features/settings/presentation/pages/settings_screen.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatefulWidget {
