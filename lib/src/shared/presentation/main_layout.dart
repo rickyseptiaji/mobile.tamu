@@ -28,7 +28,7 @@ class MainLayout extends StatelessWidget {
               leading: Icon(Icons.home),
               title: Text('Guest'),
               onTap: () {
-                context.go('/');
+                context.go('/guest');
                 context.pop();
               },
             ),

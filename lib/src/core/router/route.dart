@@ -5,32 +5,57 @@ import 'package:buku_tamu/src/features/home/presentation/pages/detail_recent_vis
 import 'package:buku_tamu/src/features/home/presentation/pages/form_guest.dart';
 import 'package:buku_tamu/src/shared/presentation/bottom_bar_navigation.dart';
 import 'package:buku_tamu/src/shared/presentation/main_layout.dart';
+import 'package:buku_tamu/src/shared/presentation/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 
-final GoRouter router = GoRouter(
-  routes: <RouteBase>[
+final router = GoRouter(
+  initialLocation: '/splash',
+  routes: [
+    /// Splash route untuk cek login pertama kali
     GoRoute(
-      path: '/',
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
+
+    /// Route guest (kalau user belum login)
+    GoRoute(
+      path: '/guest',
       builder: (context, state) => MainLayout(
         title: 'Guest',
         child: const GuestScreen(),
       ),
     ),
+
+    /// Halaman auth
     GoRoute(
       path: '/login',
-      builder: (context, state) =>
-          MainLayout(title: 'Login', child: LoginScreen()),
+      builder: (context, state) => MainLayout(
+        title: 'Login',
+        child: const LoginScreen(),
+      ),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) =>
-          MainLayout(title: 'Register', child: RegisterScreen()),
+      builder: (context, state) => MainLayout(
+        title: 'Register',
+        child: const RegisterScreen(),
+      ),
     ),
-    GoRoute(path: '/home', builder: (context, state) => NavigationBar()),
+
+    /// Halaman utama setelah login
     GoRoute(
-      path: '/home/detail-recent-visitor',
-      builder: (context, state) => DetailRecentVisitor(),
+      path: '/home',
+      builder: (context, state) => const NavigationBar(),
+      routes: [
+        GoRoute(
+          path: 'detail-recent-visitor',
+          builder: (context, state) => const DetailRecentVisitor(),
+        ),
+        GoRoute(
+          path: 'formguest',
+          builder: (context, state) => const FormGuest(),
+        ),
+      ],
     ),
-    GoRoute(path: '/home/formguest', builder: (context, state) => FormGuest()),
   ],
 );
