@@ -2,7 +2,7 @@ import 'package:buku_tamu/src/features/auth/data/datasource/auth_datasource.dart
 import 'package:buku_tamu/src/features/auth/data/datasource/firebase_auth_datasource.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/get_token.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
-import 'package:buku_tamu/src/features/auth/domain/usecase/logout.dart';
+import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';

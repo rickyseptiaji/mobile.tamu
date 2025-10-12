@@ -1,6 +1,6 @@
 import 'package:buku_tamu/src/features/auth/domain/usecase/get_token.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
-import 'package:buku_tamu/src/features/auth/domain/usecase/logout.dart';
+import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/register_usecase.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_state.dart';
@@ -13,8 +13,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final Logout logoutUseCase;
   final RegisterUseCase registerUserUseCase;
 
-  AuthBloc(this.loginUserUseCase, this.logoutUseCase, this.getTokenUseCase, this.registerUserUseCase)
-    : super(AuthInitial()) {
+  AuthBloc(
+    this.loginUserUseCase,
+    this.logoutUseCase,
+    this.getTokenUseCase,
+    this.registerUserUseCase,
+  ) : super(AuthInitial()) {
     on<SubmitLoginEvent>((event, emit) async {
       emit(AuthLoading());
       try {
@@ -42,10 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SubmitRegisterEvent>((event, emit) async {
       emit(AuthLoading());
       try {
-       final res = await registerUserUseCase(
-          event.email,
-          event.password,
-        );
+        final res = await registerUserUseCase(event.email, event.password);
         emit(AuthSuccess(res));
       } on FirebaseAuthException catch (e) {
         emit(AuthFailure(error: e.message ?? 'An unknown error occurred'));

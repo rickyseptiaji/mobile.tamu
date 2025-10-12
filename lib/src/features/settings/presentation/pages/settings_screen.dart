@@ -1,5 +1,9 @@
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -9,6 +13,11 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsPage2State extends State<SettingsScreen> {
+  Future<void> logout() async {
+    context.read<AuthBloc>().add(LogoutEvent());
+    context.go('/login');
+  }
+
   bool _isDark = false;
   @override
   Widget build(BuildContext context) {
@@ -55,10 +64,7 @@ class _SettingsPage2State extends State<SettingsScreen> {
                     title: "Messaging",
                     icon: Icons.message_outlined,
                   ),
-                  _CustomListTile(
-                    title: "Calling",
-                    icon: Icons.phone_outlined,
-                  ),
+                  _CustomListTile(title: "Calling", icon: Icons.phone_outlined),
                   _CustomListTile(
                     title: "People",
                     icon: Icons.contacts_outlined,
@@ -70,7 +76,7 @@ class _SettingsPage2State extends State<SettingsScreen> {
                 ],
               ),
               const Divider(),
-              const _SingleSection(
+              _SingleSection(
                 children: [
                   _CustomListTile(
                     title: "Help & Feedback",
@@ -83,6 +89,7 @@ class _SettingsPage2State extends State<SettingsScreen> {
                   _CustomListTile(
                     title: "Sign out",
                     icon: Icons.exit_to_app_rounded,
+                    onTap: logout,
                   ),
                 ],
               ),
@@ -98,10 +105,12 @@ class _CustomListTile extends StatelessWidget {
   final String title;
   final IconData icon;
   final Widget? trailing;
+  final VoidCallback? onTap;
   const _CustomListTile({
     required this.title,
     required this.icon,
     this.trailing,
+    this.onTap,
   });
 
   @override
@@ -110,7 +119,7 @@ class _CustomListTile extends StatelessWidget {
       title: Text(title),
       leading: Icon(icon),
       trailing: trailing,
-      onTap: () {},
+      onTap: onTap,
     );
   }
 }

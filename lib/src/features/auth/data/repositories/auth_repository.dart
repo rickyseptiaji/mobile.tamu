@@ -10,8 +10,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required this.localDataSource,
   });
 
-
-
   @override
   Future<String> login(String email, String password) async {
     final userCredential = await remoteDataSource.login(email, password);
@@ -19,16 +17,16 @@ class AuthRepositoryImpl implements AuthRepository {
     if (token != null) {
       await localDataSource.saveToken(token);
       return token;
-    } 
+    }
     throw Exception('Failed to retrieve token');
   }
 
   @override
   Future<String> register(String email, String password) async {
     await remoteDataSource.register(email, password);
-    throw UnimplementedError();
+    throw Exception('Registration successful');
   }
-  
+
   @override
   Future<void> saveToken(String token) {
     return localDataSource.saveToken(token);
