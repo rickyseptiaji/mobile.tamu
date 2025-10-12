@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/auth/presentation/bloc/login_bloc.dart';
-import 'package:buku_tamu/src/features/auth/presentation/bloc/login_state.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/login_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,23 +15,23 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<LoginBloc, LoginState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is LoginFailure) {
+          if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Login Failed: ${state.error}')),
             );
           }
-          if (state is LoginSuccess) {
+          if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Login Successful')),
             );
           }
         },
         builder: (context, state) {
-          return BlocBuilder<LoginBloc, LoginState>(
+          return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
-              if (state is LoginLoading) {
+              if (state is AuthLoading) {
                 return const Center(child: CircularProgressIndicator(),);
               }
               return SingleChildScrollView(

@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 abstract class FirebaseAuthDatasource {
   Future<UserCredential> login(String email, String password);
   Future<UserCredential> register(String email, String password);
+  Future<void> logout();
 }
-
 
 class FirebaseAuthDatasourceImpl implements FirebaseAuthDatasource {
   final FirebaseAuth firebaseAuth;
@@ -25,5 +25,10 @@ class FirebaseAuthDatasourceImpl implements FirebaseAuthDatasource {
       email: email,
       password: password,
     );
+  }
+
+  @override
+  Future<void> logout() async {
+    await firebaseAuth.signOut();
   }
 }

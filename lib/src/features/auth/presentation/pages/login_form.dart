@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/auth/presentation/bloc/login_bloc.dart';
-import 'package:buku_tamu/src/features/auth/presentation/bloc/login_event.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +90,7 @@ class _LoginFormState extends State<LoginForm> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    context.read<LoginBloc>().add(
+                    context.read<AuthBloc>().add(
                       SubmitLoginEvent(
                         email: _emailController.text,
                         password: _passwordController.text,

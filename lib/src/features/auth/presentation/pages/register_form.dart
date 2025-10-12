@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/auth/presentation/bloc/register_bloc.dart';
-import 'package:buku_tamu/src/features/auth/presentation/bloc/register_event.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -107,7 +107,7 @@ class _RegisterFormState extends State<RegisterForm> {
       ),
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          context.read<RegisterBloc>().add(
+          context.read<AuthBloc>().add(
             SubmitRegisterEvent(
               email: _emailController.text,
               password: _passwordController.text,
