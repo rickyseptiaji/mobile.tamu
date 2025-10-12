@@ -106,13 +106,15 @@ void initState() {
                   if (_formKey.currentState!.validate()) {
                     context.read<GuestBloc>().add(
                       SubmitGuestEvent(
-                        companyName: _companyController.text,
-                        fullName: _fullNameController.text,
-                        email: _emailController.text,
-                        countryCode: _countryCode,
-                        phone: '$_countryCode${_phoneController.text}',
-                        toEmployee: selectedEmployeeId ?? '',
-                        description: _descriptionController.text,
+                        {
+                          'company': _companyController.text,
+                          'fullName': _fullNameController.text,
+                          'email': _emailController.text,
+                          'phone': '$_countryCode${_phoneController.text}',
+                          'description': _descriptionController.text,
+                          'toEmployeeId': selectedEmployeeId,
+                          'timestamp': DateTime.now(),
+                        },
                       ),
                     );
                   }

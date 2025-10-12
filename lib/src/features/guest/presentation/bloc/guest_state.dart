@@ -1,42 +1,22 @@
-import 'package:equatable/equatable.dart';
+abstract class GuestState {}
 
-abstract class GuestState extends Equatable {
-  const GuestState();
+class GuestInitial extends GuestState {}
 
-  @override
-  List<Object?> get props => [];
-}
-
-class GuestInitial extends GuestState {
-  const GuestInitial();
-}
-
-class GuestLoading extends GuestState {
-  const GuestLoading();
-}
+class GuestLoading extends GuestState {}
 
 class GuestSuccess extends GuestState {
   final String message;
-  const GuestSuccess(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  GuestSuccess({required this.message});
 }
 
 class GuestError extends GuestState {
-  final String message;
-
-  const GuestError(this.message);
-
-  @override
-  List<Object> get props => [message];
+  final String error;
+  GuestError(this.error);
 }
 
 class GuestLoaded extends GuestState {
   final List<Map<String, dynamic>> employees;
-  const GuestLoaded(this.employees);
-  @override
-  List<Object> get props => [employees];
+  GuestLoaded(this.employees);
 }
 
 class EmployeesLoading extends GuestState {}
@@ -44,9 +24,6 @@ class EmployeesLoading extends GuestState {}
 class FormSubmitting extends GuestState {}
 
 class FormError extends GuestState {
-  final String message;
-  const FormError(this.message);
-
-  @override
-  List<Object?> get props => [message];
+  final String error;
+  FormError(this.error);
 }

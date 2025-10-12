@@ -14,4 +14,15 @@ class GuestEntity {
     this.address,
     this.divisionId,
   });
+    Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'fullName': fullName,
+      'email': email,
+      'phone': phone,
+      'address': address,
+      'divisionId': divisionId,
+    };
+  }
 }
+

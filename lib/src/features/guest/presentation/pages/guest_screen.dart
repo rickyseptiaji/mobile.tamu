@@ -26,7 +26,7 @@ class _GuestScreenState extends State<GuestScreen> {
         listener: (context, state) {
          if (state is GuestError) {
            ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(content: Text(state.message), backgroundColor: Colors.red,),
+             SnackBar(content: Text(state.error), backgroundColor: Colors.red,),
            );
          }else if (state is GuestSuccess) {
            ScaffoldMessenger.of(context).showSnackBar(
