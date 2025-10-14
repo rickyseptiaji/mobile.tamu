@@ -1,3 +1,4 @@
+import 'package:buku_tamu/src/features/guest/domain/entity/guest_entity.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_bloc.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_event.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_state.dart';
@@ -22,15 +23,15 @@ class _GuestFormState extends State<GuestForm> {
   final TextEditingController _descriptionController = TextEditingController();
   String? selectedEmployeeId;
   String _countryCode = '+62';
-@override
-void initState() {
-  super.initState();
-  if (widget.employees.isNotEmpty) {
-    selectedEmployeeId = widget.employees.first['id'].toString();
-  } else {
-    selectedEmployeeId = null;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.employees.isNotEmpty) {
+      selectedEmployeeId = widget.employees.first['id'].toString();
+    } else {
+      selectedEmployeeId = null;
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -106,15 +107,14 @@ void initState() {
                   if (_formKey.currentState!.validate()) {
                     context.read<GuestBloc>().add(
                       SubmitGuestEvent(
-                        {
-                          'company': _companyController.text,
-                          'fullName': _fullNameController.text,
-                          'email': _emailController.text,
-                          'phone': '$_countryCode${_phoneController.text}',
-                          'description': _descriptionController.text,
-                          'toEmployeeId': selectedEmployeeId,
-                          'timestamp': DateTime.now(),
-                        },
+                        GuestEntity(
+                          companyName: _companyController.text,
+                          fullName: _fullNameController.text,
+                          email: _emailController.text,
+                          phone: '$_countryCode${_phoneController.text.trim()}',
+                          description: _descriptionController.text,
+                          employeeId: selectedEmployeeId ?? '',
+                        ),
                       ),
                     );
                   }

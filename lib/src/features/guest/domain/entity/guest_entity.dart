@@ -1,27 +1,30 @@
 class GuestEntity {
   String? id;
   String? fullName;
+  String? companyName;
   String? email;
   String? phone;
-  String? address;
-  String? divisionId;
+  String? employeeId;
+  String? description;
 
   GuestEntity({
     this.id,
     this.fullName,
+    this.companyName,
     this.email,
     this.phone,
-    this.address,
-    this.divisionId,
+    this.employeeId,
+    this.description,
   });
     Map<String, dynamic> toMap() {
     return {
       'id': id,
       'fullName': fullName,
+      'companyName': companyName,
       'email': email,
       'phone': phone,
-      'address': address,
-      'divisionId': divisionId,
+      'employeeId': employeeId,
+      'description': description,
     };
   }
 }

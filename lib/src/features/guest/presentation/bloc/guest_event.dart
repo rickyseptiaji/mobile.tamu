@@ -1,8 +1,10 @@
 
+import 'package:buku_tamu/src/features/guest/domain/entity/guest_entity.dart';
+
 abstract class GuestEvent {}
 
 class SubmitGuestEvent extends GuestEvent {
-  final dynamic guest;
+  final GuestEntity guest;
   SubmitGuestEvent(this.guest);
 }
 

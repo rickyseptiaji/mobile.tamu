@@ -14,7 +14,8 @@ class GuestRemoteDataSourceImpl implements GuestRemoteDataSource {
   @override
   Future<void> addGuest(GuestModel guest) async {
     try {
-      await firestore.collection('guests').add(guest.toMap());
+      final docRef = firestore.collection('guests').doc();
+      await docRef.set(guest.toMap()..['id'] = docRef.id);
     } on FirebaseException catch (e) {
       throw Exception('Gagal menambahkan tamu: ${e.message}');
     } catch (e) {

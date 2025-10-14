@@ -14,6 +14,7 @@ class GuestRepositoryImpl implements GuestRepository {
     return remoteDataSource.addGuest(guestModel);
   }
 
+  @override
   Future<List<Map<String, dynamic>>> fetchEmployees() {
     return remoteDataSource.fetchEmployees();
   }
