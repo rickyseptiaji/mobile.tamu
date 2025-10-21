@@ -16,15 +16,29 @@ class AuthRepositoryImpl implements AuthRepository {
     final token = await userCredential.user?.getIdToken();
     if (token != null) {
       await localDataSource.saveToken(token);
-      return token;
+      return 'Login successful';
     }
     throw Exception('Failed to retrieve token');
   }
 
   @override
-  Future<String> register(String email, String password) async {
-    await remoteDataSource.register(email, password);
-    throw Exception('Registration successful');
+  Future<String> register(
+    String email,
+    String password,
+    String fullName,
+    String companyName,
+    String countryCode,
+    String phone,
+  ) async {
+    await remoteDataSource.register(
+      email,
+      password,
+      fullName,
+      companyName,
+      countryCode,
+      phone,
+    );
+    return 'Registration successful';
   }
 
   @override

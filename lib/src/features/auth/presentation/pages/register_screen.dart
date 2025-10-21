@@ -13,9 +13,9 @@ class RegisterScreen extends StatelessWidget {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Registration Successful')),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
             Navigator.of(context).pop();
           } else if (state is AuthFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -27,7 +27,7 @@ class RegisterScreen extends StatelessWidget {
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
               if (state is AuthLoading) {
-                return const Center(child: CircularProgressIndicator(),);
+                return const Center(child: CircularProgressIndicator());
               }
               return SingleChildScrollView(
                 child: Padding(

@@ -7,8 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GuestBloc extends Bloc<GuestEvent, GuestState> {
   final FirebaseFirestore firestore;
-  final AddGuest addGuestUseCase;
-  final FetchEmployee fetchEmployeeUseCase;
+  final AddGuestUseCase addGuestUseCase;
+  final FetchEmployeeUseCase fetchEmployeeUseCase;
   GuestBloc(this.firestore, this.addGuestUseCase, this.fetchEmployeeUseCase) : super(GuestInitial()) {
     on<SubmitGuestEvent>((event, emit) async {
       emit(FormSubmitting());

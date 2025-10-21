@@ -1,4 +1,3 @@
-
 abstract class AuthEvent {}
 
 class SubmitLoginEvent extends AuthEvent {

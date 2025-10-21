@@ -1,8 +1,23 @@
+import 'package:buku_tamu/src/features/home/presentation/bloc/home_bloc.dart';
+import 'package:buku_tamu/src/features/home/presentation/bloc/home_event.dart';
+import 'package:buku_tamu/src/features/home/presentation/bloc/home_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HomeBloc>().add(LoadGuestsEventUser());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +35,11 @@ class HomeScreen extends StatelessWidget {
                 bottomRight: Radius.circular(80),
               ),
             ),
-            child: Column(
+            child: const Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   'Welcome to Buku Tamu',
                   style: TextStyle(
                     fontSize: 24,
@@ -32,15 +47,15 @@ class HomeScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 8),
-                const Text(
+                SizedBox(height: 8),
+                Text(
                   'Your guestbook app for managing visitors.',
                   style: TextStyle(fontSize: 16, color: Colors.white70),
                 ),
               ],
             ),
           ),
-
+    
           // SECTION 2
           Expanded(
             child: Container(
@@ -54,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text(
+                    child: const Text(
                       'Form',
                       style: TextStyle(
                         fontSize: 18,
@@ -62,22 +77,29 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-
+                  const SizedBox(height: 8),
+    
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
                       onPressed: () {
                         context.push('/home/formguest');
                       },
-                      child: const Text('Open Form'),
+                      child: const Text('Open Form', style: TextStyle(fontSize: 16)),
                     ),
                   ),
-
+    
                   const SizedBox(height: 16),
                   Row(
                     children: [
                       const Text(
-                        'Recent Visitors',
+                        'History',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -85,38 +107,55 @@ class HomeScreen extends StatelessWidget {
                       ),
                       const Spacer(),
                       TextButton(
-                        onPressed: () {},
-                        child: Text(
+                        onPressed: () {
+                          context.push('/home/all-guests');
+                        },
+                        child: const Text(
                           'View All',
                           style: TextStyle(color: Color(0xFF4C7380)),
                         ),
                       ),
                     ],
                   ),
+    
+                  // BlocBuilder untuk menampilkan data tamu
                   Expanded(
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.blue,
-                              child: const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                              ),
-                            ),
-                            title: const Text('Visitor Name'),
-                            subtitle: const Text('Visited on 2023-10-01'),
-                            trailing: const Icon(Icons.arrow_forward_ios),
-                            onTap: () {
-                              context.push('/home/detail-recent-visitor');
+                    child: BlocBuilder<HomeBloc, HomeState>(
+                      builder: (context, state) {
+                        if (state is HomeLoading) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (state is HomeLoaded) {
+                          final guests = state.guest;
+                          if (guests.isEmpty) {
+                            return const Center(child: Text('No visitors yet.'));
+                          }
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: guests.length,
+                            itemBuilder: (context, index) {
+                              final guest = guests[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                child: ListTile(
+                                  leading: const CircleAvatar(
+                                    backgroundColor: Colors.blue,
+                                    child: Icon(Icons.person, color: Colors.white),
+                                  ),
+                                  title: Text(guest['name']),
+                                  subtitle: Text('Visited on ${guest['createdAt']}'),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                  onTap: () {
+                                    context.push('/home/detail-recent-visitor');
+                                  },
+                                ),
+                              );
                             },
-                          ),
-                        );
+                          );
+                        } else if (state is HomeError) {
+                          return Center(child: Text('Error: ${state.error}'));
+                        }
+                        return const Center(child: Text('Loading visitors...'));
                       },
-                      itemCount: 5,
                     ),
                   ),
                 ],

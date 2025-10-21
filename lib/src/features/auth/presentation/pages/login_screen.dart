@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
           }
           if (state is AuthSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login Successful')),
+               SnackBar(content: Text(state.message)),
             );
           }
         },

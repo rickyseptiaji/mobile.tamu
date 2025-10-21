@@ -1,9 +1,9 @@
 import 'package:buku_tamu/src/features/auth/domain/repositories/auth_repository.dart';
 
-class Logout {
+class LogoutUseCase {
   final AuthRepository repository;
 
-  Logout(this.repository);
+  LogoutUseCase(this.repository);
 
   Future<void> call() async {
     await repository.logout();
