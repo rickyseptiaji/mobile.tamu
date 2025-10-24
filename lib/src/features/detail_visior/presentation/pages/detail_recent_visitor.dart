@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class DetailRecentVisitor extends StatelessWidget {
-  const DetailRecentVisitor({super.key});
+  final String slug;
+  const DetailRecentVisitor({super.key, required this.slug});
 
   @override
   Widget build(BuildContext context) {

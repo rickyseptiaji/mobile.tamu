@@ -4,6 +4,10 @@ import 'package:buku_tamu/src/features/auth/domain/usecase/get_token_usecase.dar
 import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/form_visitor/data/datasource/form_visitor_datasource.dart';
+import 'package:buku_tamu/src/features/form_visitor/data/repository/form_visitor_repository.dart';
+import 'package:buku_tamu/src/features/form_visitor/domain/repository/form_visitor_repository.dart';
+import 'package:buku_tamu/src/features/form_visitor/presentation/bloc/form_bloc.dart';
 import 'package:buku_tamu/src/features/guest/data/datasource/guest_datasource.dart';
 import 'package:buku_tamu/src/features/guest/data/repositories/guest_repository.dart';
 import 'package:buku_tamu/src/features/guest/domain/repositories/guest_repository.dart';
@@ -12,7 +16,8 @@ import 'package:buku_tamu/src/features/guest/domain/usecases/fetch_employee.dart
 import 'package:buku_tamu/src/features/home/data/datasource/home_datasource.dart';
 import 'package:buku_tamu/src/features/home/data/repository/home_repository.dart';
 import 'package:buku_tamu/src/features/home/domain/repository/home_repository.dart';
-import 'package:buku_tamu/src/features/home/domain/usecases/add_guest.dart';
+import 'package:buku_tamu/src/features/form_visitor/domain/usecases/add_visitor_usecase.dart';
+import 'package:buku_tamu/src/features/home/domain/usecases/fetch_history.dart';
 import 'package:buku_tamu/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -34,6 +39,7 @@ Future<void> init() async {
   sl.registerFactory(() => AuthBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory(() => GuestBloc(sl(), sl(), sl()));
   sl.registerFactory(() => HomeBloc(sl()));
+  sl.registerFactory(() => FormVisitorBloc(sl()));
 
   // UseCase
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
@@ -42,7 +48,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => AddGuestUseCase(sl()));
   sl.registerLazySingleton(() => FetchEmployeeUseCase(sl()));
-  sl.registerLazySingleton(() => AddGuestUserUseCase(sl()));
+  sl.registerLazySingleton(() => AddVisitorUsecase(sl()));
+  sl.registerLazySingleton(() => FetchHistoryUseCase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -54,7 +61,9 @@ Future<void> init() async {
   sl.registerLazySingleton<HomeRepository>(
     () => HomeRepositoryImpl(remoteDataSource: sl()),
   );
-
+  sl.registerLazySingleton<FormVisitorRepository>(
+    () => FormVisitorRepositoryImpl(remoteDataSource: sl()),
+  );
 
   // data sources
   sl.registerLazySingleton<FlutterSecureStorage>(
@@ -74,5 +83,8 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<HomeRemoteDataSource>(
     () => HomeRemoteDataSourceImpl(firestore: sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<FormVisitorDatasource>(
+    () => FormVisitorRemoteDataSourceImpl(firestore: sl<FirebaseFirestore>()),
   );
 }

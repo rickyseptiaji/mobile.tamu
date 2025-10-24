@@ -1,47 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:rxdart/transformers.dart';
 
 abstract class HomeRemoteDataSource {
-  Future<void> addGuest(String employeeId, String description);
-  Future<List<Map<String, dynamic>>> fetchGuest();
+  Stream<List<Map<String, dynamic>>> fetchHistory();
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   final FirebaseFirestore firestore;
 
   HomeRemoteDataSourceImpl({required this.firestore});
-
-  @override
-  Future<String> addGuest(String employeeId, String description) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        throw Exception('User tidak terautentikasi');
-      }
-      final userId = user.uid;
-      final querySnapshot = await firestore
-          .collection('users')
-          .where('userId', isEqualTo: userId)
-          .limit(1)
-          .get();
-      if (querySnapshot.docs.isEmpty) {
-        throw Exception('data tidak ditemukan untuk user ini');
-      }
-      final userDocId = querySnapshot.docs.first.id;
-      await firestore.collection('guests').add({
-        'employeeId': employeeId,
-        'description': description,
-        'createdBy': userDocId,
-        'role': 'user',
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-    } on FirebaseException catch (e) {
-      throw Exception('Gagal menambahkan tamu: ${e.message}');
-    } catch (e) {
-      throw Exception('Terjadi kesalahan tak terduga: $e');
-    }
-    return 'Tamu berhasil ditambahkan';
-  }
 
   Future<List<Map<String, dynamic>>> fetchEmployee() async {
     try {
@@ -57,16 +26,69 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> fetchGuest() async {
-    try {
-      final querySnapshot = await firestore.collection('guest').get();
-      return querySnapshot.docs
-          .map((doc) => {'id': doc.id, ...doc.data()})
-          .toList();
-    } on FirebaseException catch (e) {
-      throw Exception('Gagal memuat data karyawan: ${e.message}');
-    } catch (e) {
-      throw Exception('Terjadi kesalahan tak terduga: $e');
-    }
+  Stream<List<Map<String, dynamic>>> fetchHistory() {
+    return FirebaseAuth.instance.authStateChanges().switchMap((currentUser) {
+      if (currentUser == null) {
+        return Stream.value([]);
+      }
+
+      return FirebaseFirestore.instance
+          .collection('visits')
+          .where('userId', isEqualTo: currentUser.uid)
+          .orderBy('createdAt', descending: true)
+          .limit(5)
+          .snapshots()
+          .asyncMap((historySnapshot) async {
+            List<Map<String, dynamic>> guestList = historySnapshot.docs.map((
+              doc,
+            ) {
+              final data = doc.data();
+              final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+              final formattedDate = createdAt != null
+                  ? DateFormat('dd-MM-yyyy HH:mm').format(createdAt)
+                  : 'Unknown';
+
+              return {
+                'id': doc.id,
+                'description': data['description'] ?? '',
+                'createdAt': createdAt,
+                'createdAtString': formattedDate,
+                'employeeId': data['employeeId'] ?? '',
+                'userId': data['userId'] ?? '',
+              };
+            }).toList();
+            final userIds = guestList
+                .map((e) => e['userId'] as String)
+                .toSet()
+                .toList();
+            if (userIds.isEmpty) return guestList;
+            final userSnapshot = await firestore
+                .collection('users')
+                .where(FieldPath.documentId, whereIn: userIds)
+                .get();
+            final userMap = {
+              for (var doc in userSnapshot.docs) doc.id: doc.data(),
+            };
+
+            for (var guest in guestList) {
+              final user = userMap[guest['userId']];
+              if (user != null) {
+                final userCreatedAt = (user['createdAt'] as Timestamp?)
+                    ?.toDate();
+                guest['users'] = {
+                  ...user,
+                  'createdAt': userCreatedAt,
+                  'createdAtString': userCreatedAt != null
+                      ? DateFormat('dd-MM-yyyy HH:mm').format(userCreatedAt)
+                      : 'Unknown',
+                };
+              } else {
+                guest['users'] = null;
+              }
+            }
+
+            return guestList;
+          });
+    });
   }
 }

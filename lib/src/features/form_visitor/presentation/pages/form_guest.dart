@@ -1,10 +1,11 @@
+import 'package:buku_tamu/src/features/form_visitor/presentation/bloc/form_bloc.dart';
+import 'package:buku_tamu/src/features/form_visitor/presentation/bloc/form_event.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_bloc.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_event.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_state.dart';
-import 'package:buku_tamu/src/features/home/presentation/bloc/home_bloc.dart';
-import 'package:buku_tamu/src/features/home/presentation/bloc/home_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FormGuest extends StatefulWidget {
   const FormGuest({super.key});
@@ -110,12 +111,13 @@ class _FormGuestState extends State<FormGuest> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              context.read<HomeBloc>().add(
-                                SubmitGuestEventUser(
+                              context.read<FormVisitorBloc>().add(
+                                SubmitVisitorEvent(
                                   employeeId: selectedEmployeeId!,
                                   description: descriptionController.text,
                                 ),
                               );
+                              context.pop();
                             }
                           },
                           child: const Text('Submit'),

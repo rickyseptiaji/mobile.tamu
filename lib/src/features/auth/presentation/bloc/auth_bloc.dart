@@ -30,9 +30,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<CheckAuthEvent>((event, emit) async {
-      final token = await getTokenUseCase();
-      if (token != null && token.isNotEmpty) {
-        emit(AuthAuthenticated(token));
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        emit(AuthAuthenticated(currentUser));
       } else {
         emit(AuthUnauthenticated());
       }

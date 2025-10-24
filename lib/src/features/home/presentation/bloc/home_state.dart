@@ -14,3 +14,4 @@ class HomeLoaded extends HomeState {
   final List<Map<String, dynamic>> guest;
   HomeLoaded(this.guest);
 }
+

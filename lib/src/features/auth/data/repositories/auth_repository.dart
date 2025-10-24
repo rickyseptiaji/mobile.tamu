@@ -1,6 +1,7 @@
 import 'package:buku_tamu/src/features/auth/data/datasource/auth_datasource.dart';
 import 'package:buku_tamu/src/features/auth/data/datasource/firebase_auth_datasource.dart';
 import 'package:buku_tamu/src/features/auth/domain/repositories/auth_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthDatasource remoteDataSource;
@@ -11,14 +12,8 @@ class AuthRepositoryImpl implements AuthRepository {
   });
 
   @override
-  Future<String> login(String email, String password) async {
-    final userCredential = await remoteDataSource.login(email, password);
-    final token = await userCredential.user?.getIdToken();
-    if (token != null) {
-      await localDataSource.saveToken(token);
-      return 'Login successful';
-    }
-    throw Exception('Failed to retrieve token');
+  Future<User> login(String email, String password) async {
+    return await remoteDataSource.login(email, password);
   }
 
   @override

@@ -5,14 +5,10 @@ class HomeRepositoryImpl extends HomeRepository {
   final HomeRemoteDataSource remoteDataSource;
 
   HomeRepositoryImpl({required this.remoteDataSource});
-
   @override
-  Future<List<Map<String, dynamic>>> fetchGuest() async {
-    return remoteDataSource.fetchGuest();
+  Stream<List<Map<String, dynamic>>> fetchHistory()  {
+    return remoteDataSource.fetchHistory();
   }
 
-  @override
-  Future<void> addGuest(String employeeId, String description) async {
-    return remoteDataSource.addGuest(employeeId, description);
-  }
+
 }

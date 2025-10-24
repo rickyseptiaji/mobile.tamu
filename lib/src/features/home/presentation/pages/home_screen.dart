@@ -1,3 +1,4 @@
+import 'package:buku_tamu/src/core/helper/slug.dart';
 import 'package:buku_tamu/src/features/home/presentation/bloc/home_bloc.dart';
 import 'package:buku_tamu/src/features/home/presentation/bloc/home_event.dart';
 import 'package:buku_tamu/src/features/home/presentation/bloc/home_state.dart';
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-    
+
           // SECTION 2
           Expanded(
             child: Container(
@@ -78,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-    
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -91,10 +92,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         context.push('/home/formguest');
                       },
-                      child: const Text('Open Form', style: TextStyle(fontSize: 16)),
+                      child: const Text(
+                        'Open Form',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
-    
+
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -117,17 +121,21 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
-    
+
                   // BlocBuilder untuk menampilkan data tamu
                   Expanded(
                     child: BlocBuilder<HomeBloc, HomeState>(
                       builder: (context, state) {
                         if (state is HomeLoading) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
                         } else if (state is HomeLoaded) {
                           final guests = state.guest;
                           if (guests.isEmpty) {
-                            return const Center(child: Text('No visitors yet.'));
+                            return const Center(
+                              child: Text('No visitors yet.'),
+                            );
                           }
                           return ListView.builder(
                             padding: EdgeInsets.zero,
@@ -139,13 +147,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: ListTile(
                                   leading: const CircleAvatar(
                                     backgroundColor: Colors.blue,
-                                    child: Icon(Icons.person, color: Colors.white),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                  title: Text(guest['name']),
-                                  subtitle: Text('Visited on ${guest['createdAt']}'),
+                                  title: Text(
+                                    guest['users']?['fullName'] ?? 'No Name',
+                                  ),
+                                  subtitle: Text(
+                                    'Visited on ${guest['createdAtString'] ?? 'Unknown'}',
+                                  ),
                                   trailing: const Icon(Icons.arrow_forward_ios),
                                   onTap: () {
-                                    context.push('/home/detail-recent-visitor');
+                                    final id = guest['id'];
+
+                                    final slug = generateSlug(id);
+                                    context.push(
+                                      '/home/detail-recent-visitor/$slug',
+                                    );
                                   },
                                 ),
                               );
