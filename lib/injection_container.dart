@@ -4,6 +4,11 @@ import 'package:buku_tamu/src/features/auth/domain/usecase/get_token_usecase.dar
 import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/detail_visior/data/datasource/detailvisitor_datasource.dart';
+import 'package:buku_tamu/src/features/detail_visior/data/repository/detailvisitor_repository.dart';
+import 'package:buku_tamu/src/features/detail_visior/domain/repository/detailvisitor_repository.dart';
+import 'package:buku_tamu/src/features/detail_visior/domain/usecases/detailvisitor_usecase.dart';
+import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_bloc.dart';
 import 'package:buku_tamu/src/features/form_visitor/data/datasource/form_visitor_datasource.dart';
 import 'package:buku_tamu/src/features/form_visitor/data/repository/form_visitor_repository.dart';
 import 'package:buku_tamu/src/features/form_visitor/domain/repository/form_visitor_repository.dart';
@@ -40,6 +45,7 @@ Future<void> init() async {
   sl.registerFactory(() => GuestBloc(sl(), sl(), sl()));
   sl.registerFactory(() => HomeBloc(sl()));
   sl.registerFactory(() => FormVisitorBloc(sl()));
+  sl.registerFactory(() => DetailVisitorBloc(sl()));
 
   // UseCase
   sl.registerLazySingleton(() => RegisterUseCase(sl()));
@@ -50,6 +56,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => FetchEmployeeUseCase(sl()));
   sl.registerLazySingleton(() => AddVisitorUsecase(sl()));
   sl.registerLazySingleton(() => FetchHistoryUseCase(sl()));
+  sl.registerLazySingleton(() => DetailvisitorUsecase(sl()));
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
@@ -63,6 +70,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<FormVisitorRepository>(
     () => FormVisitorRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton<DetailvisitorRepository>(
+    () => DetailvisitorRepositoryImpl(remoteDataSource: sl()),
   );
 
   // data sources
@@ -86,5 +96,8 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<FormVisitorDatasource>(
     () => FormVisitorRemoteDataSourceImpl(firestore: sl<FirebaseFirestore>()),
+  );
+  sl.registerLazySingleton<DetailvisitorDatasource>(
+    () => DetailvisitorDatasourceImpl(firestore: sl<FirebaseFirestore>()),
   );
 }
