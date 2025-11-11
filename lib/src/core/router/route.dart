@@ -1,7 +1,7 @@
 import 'package:buku_tamu/src/features/auth/presentation/pages/login_screen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/register_screen.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest_screen.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/pages/detail_recent_visitor.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/pages/detail_recent_visitor.dart';
 import 'package:buku_tamu/src/features/form_visitor/presentation/pages/form_guest.dart';
 import 'package:buku_tamu/src/shared/presentation/bottom_bar_navigation.dart';
 import 'package:buku_tamu/src/shared/presentation/main_layout.dart';

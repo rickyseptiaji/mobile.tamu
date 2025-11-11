@@ -1,6 +1,6 @@
-import 'package:buku_tamu/src/features/detail_visior/domain/usecases/detailvisitor_usecase.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_event.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_state.dart';
+import 'package:buku_tamu/src/features/detail_visitor/domain/usecases/detailvisitor_usecase.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_event.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailVisitorBloc extends Bloc<DetailVisitorEvent, DetailVisitorState> {

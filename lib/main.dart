@@ -1,6 +1,7 @@
 import 'package:buku_tamu/firebase_options.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_bloc.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_bloc.dart';
+import 'package:buku_tamu/src/features/form_visitor/presentation/bloc/form_bloc.dart';
 import 'package:buku_tamu/src/features/home/presentation/bloc/home_bloc.dart';
 import './app.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_bloc.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => di.sl<GuestBloc>()),
         BlocProvider(create: (_) => di.sl<AuthBloc>()),
         BlocProvider(create: (_) => di.sl<HomeBloc>()),
+        BlocProvider(create: (_) => di.sl<FormVisitorBloc>()),
         BlocProvider(create: (_) => di.sl<DetailVisitorBloc>()),
       ],
       child: App(),

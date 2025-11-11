@@ -4,11 +4,11 @@ import 'package:buku_tamu/src/features/auth/domain/usecase/get_token_usecase.dar
 import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
 import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:buku_tamu/src/features/detail_visior/data/datasource/detailvisitor_datasource.dart';
-import 'package:buku_tamu/src/features/detail_visior/data/repository/detailvisitor_repository.dart';
-import 'package:buku_tamu/src/features/detail_visior/domain/repository/detailvisitor_repository.dart';
-import 'package:buku_tamu/src/features/detail_visior/domain/usecases/detailvisitor_usecase.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_bloc.dart';
+import 'package:buku_tamu/src/features/detail_visitor/data/datasource/detailvisitor_datasource.dart';
+import 'package:buku_tamu/src/features/detail_visitor/data/repository/detailvisitor_repository.dart';
+import 'package:buku_tamu/src/features/detail_visitor/domain/repository/detailvisitor_repository.dart';
+import 'package:buku_tamu/src/features/detail_visitor/domain/usecases/detailvisitor_usecase.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_bloc.dart';
 import 'package:buku_tamu/src/features/form_visitor/data/datasource/form_visitor_datasource.dart';
 import 'package:buku_tamu/src/features/form_visitor/data/repository/form_visitor_repository.dart';
 import 'package:buku_tamu/src/features/form_visitor/domain/repository/form_visitor_repository.dart';

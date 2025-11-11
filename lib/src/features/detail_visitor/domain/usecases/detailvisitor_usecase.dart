@@ -1,4 +1,4 @@
-import 'package:buku_tamu/src/features/detail_visior/domain/repository/detailvisitor_repository.dart';
+import 'package:buku_tamu/src/features/detail_visitor/domain/repository/detailvisitor_repository.dart';
 
 class DetailvisitorUsecase {
 final DetailvisitorRepository repository;

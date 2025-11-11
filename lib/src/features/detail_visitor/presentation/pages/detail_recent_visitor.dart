@@ -1,6 +1,6 @@
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_bloc.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_event.dart';
-import 'package:buku_tamu/src/features/detail_visior/presentation/bloc/detail_visitor_state.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_bloc.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_event.dart';
+import 'package:buku_tamu/src/features/detail_visitor/presentation/bloc/detail_visitor_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
