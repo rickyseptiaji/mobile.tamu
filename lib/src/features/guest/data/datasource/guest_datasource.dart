@@ -16,13 +16,18 @@ class GuestRemoteDataSourceImpl implements GuestRemoteDataSource {
     try {
       final guestQuery = await firestore
           .collection('guests')
-          .where('email', isEqualTo: guest.email)
+          .where('phone', isEqualTo: guest.phone)
           .limit(1)
           .get();
       DocumentReference guestRef;
       if (guestQuery.docs.isNotEmpty) {
-        guestRef = guestQuery.docs.first.reference;
-        await guestRef.update({'visitCount': FieldValue.increment(1)});
+        final existingGuestDoc = guestQuery.docs.first;
+        guestRef = existingGuestDoc.reference;
+        await guestRef.update({
+          'fullName': guest.fullName,
+          'email': guest.email,
+          'companyName': guest.companyName,
+        });
       } else {
         guestRef = firestore.collection('guests').doc();
         await guestRef.set({
@@ -31,8 +36,6 @@ class GuestRemoteDataSourceImpl implements GuestRemoteDataSource {
           'fullName': guest.fullName,
           'companyName': guest.companyName,
           'phone': guest.phone,
-          'userId': null,
-          'visitCount': FieldValue.increment(1),
         });
       }
 
