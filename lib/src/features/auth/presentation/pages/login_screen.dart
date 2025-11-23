@@ -23,24 +23,20 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
           if (state is AuthSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-               SnackBar(content: Text(state.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
-          return BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              if (state is AuthLoading) {
-                return const Center(child: CircularProgressIndicator(),);
-              }
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: LoginForm(),
-                ),
-              );
-            },
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: LoginForm(),
+            ),
           );
         },
       ),

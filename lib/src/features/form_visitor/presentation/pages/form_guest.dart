@@ -34,8 +34,6 @@ class _FormGuestState extends State<FormGuest> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is GuestLoaded) {
             final employees = state.employees;
-            final selected =
-                selectedEmployeeId ?? employees.first['id'].toString();
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Container(
@@ -66,39 +64,71 @@ class _FormGuestState extends State<FormGuest> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      // Add your form fields here
-                      DropdownMenu<String>(
-                        inputDecorationTheme: InputDecorationTheme(
-                          filled: true,
-                          fillColor: const Color(
-                            0xFFEDF5F4,
-                          ).withValues(alpha: 0.5),
-                          border: const OutlineInputBorder(),
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        enableFilter: true,
-                        requestFocusOnTap: true,
-                        leadingIcon: const Icon(Icons.search),
-                        label: const Text('Kepada'),
-                        hintText: 'Pilih pegawai',
-                        initialSelection: selected,
-                        dropdownMenuEntries: employees
-                            .map<DropdownMenuEntry<String>>(
-                              (employee) => DropdownMenuEntry<String>(
-                                value: employee['id'].toString(),
-                                label: employee['fullName'],
+                      FormField<String>(
+                        validator: (value) {
+                          if (selectedEmployeeId == null ||
+                              selectedEmployeeId!.isEmpty) {
+                            return "Pegawai harus dipilih";
+                          }
+                          return null;
+                        },
+                        builder: (state) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              DropdownMenu<String>(
+                                inputDecorationTheme: InputDecorationTheme(
+                                  filled: true,
+                                  fillColor: const Color(
+                                    0xFFEDF5F4,
+                                  ).withValues(alpha: 0.5),
+                                  border: const OutlineInputBorder(),
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                enableFilter: true,
+                                requestFocusOnTap: true,
+                                leadingIcon: const Icon(Icons.search),
+                                label: const Text('Kepada'),
+                                hintText: 'Pilih pegawai',
+                                initialSelection: selectedEmployeeId,
+                                dropdownMenuEntries: employees.map((employee) {
+                                  return DropdownMenuEntry(
+                                    value: employee['id'].toString(),
+                                    label: employee['fullName'],
+                                  );
+                                }).toList(),
+                                onSelected: (value) {
+                                  setState(() => selectedEmployeeId = value);
+                                  state.didChange(value);
+                                },
                               ),
-                            )
-                            .toList(),
-                        onSelected: (value) {
-                          setState(() {
-                            selectedEmployeeId = value;
-                          });
+                              if (state.hasError)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 6,
+                                    left: 12,
+                                  ),
+                                  child: Text(
+                                    state.errorText!,
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
                         },
                       ),
 
                       const SizedBox(height: 16),
                       TextFormField(
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return "Deskripsi Tidak Boleh Kosong";
+                          }
+                          return null;
+                        },
                         controller: descriptionController,
                         decoration: InputDecoration(
                           filled: true,

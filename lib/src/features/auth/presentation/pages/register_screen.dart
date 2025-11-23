@@ -24,18 +24,14 @@ class RegisterScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return BlocBuilder<AuthBloc, AuthState>(
-            builder: (context, state) {
-              if (state is AuthLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: RegisterForm(),
-                ),
-              );
-            },
+          if (state is AuthLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: RegisterForm(),
+            ),
           );
         },
       ),
