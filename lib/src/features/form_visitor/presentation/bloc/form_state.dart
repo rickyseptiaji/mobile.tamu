@@ -1,15 +1,24 @@
-abstract class FormVisitorState {}
+enum FormVisitorStatus { initial, loading, success, failure }
+class FormVisitorState {
+  final FormVisitorStatus status;
+  final String? message;
+  final String? error;
 
-class FormVisitorInitial extends FormVisitorState {}
+  const FormVisitorState({
+    this.status = FormVisitorStatus.initial,
+    this.message,
+    this.error,
+  });
 
-class FormVisitorLoading extends FormVisitorState {}
-
-class FormVisitorSuccess extends FormVisitorState {
-  final String message;
-  FormVisitorSuccess({required this.message});
-}
-
-class FormVisitorError extends FormVisitorState {
-  final String error;
-  FormVisitorError(this.error);
+  FormVisitorState copyWith({
+    FormVisitorStatus? status,
+    String? message,
+    String? error,
+  }) {
+    return FormVisitorState(
+      status: status ?? this.status,
+      message: message ?? this.message,
+      error: error ?? this.error,
+    );
+  }
 }

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class FirebaseAuthDatasource {
-  Future<User> login(String email, String password);
+  Future<void> login(String email, String password);
   Future<void> register(
     String email,
     String password,
@@ -24,9 +24,11 @@ class FirebaseAuthDatasourceImpl implements FirebaseAuthDatasource {
   });
 
   @override
-  Future<User> login(String email, String password) async {
-    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-    return credential.user!;
+  Future<void> login(String email, String password) async {
+    await firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   @override
@@ -42,7 +44,7 @@ class FirebaseAuthDatasourceImpl implements FirebaseAuthDatasource {
       email: email,
       password: password,
     );
-  final uid = userCredential.user?.uid;
+    final uid = userCredential.user?.uid;
     if (uid != null) {
       await firebaseFirestore.collection('users').doc(uid).set({
         'userId': uid,

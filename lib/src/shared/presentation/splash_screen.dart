@@ -17,20 +17,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<AuthBloc>().add(CheckAuthEvent());
+    context.read<AuthBloc>().add(AuthStarted());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthAuthenticated) {
+        if (state.status == AuthStatus.authenticated) {
           context.go('/home');
-        } else if (state is AuthUnauthenticated) {
+        } else if (state.status == AuthStatus.unauthenticated) {
           context.go('/login');
         }
       },
-      child: Scaffold(body: Center(child: CircularProgressIndicator())),
+      child: const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

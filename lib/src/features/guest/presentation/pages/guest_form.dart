@@ -1,3 +1,4 @@
+import 'package:buku_tamu/src/features/employee/data/models/employee_models.dart';
 import 'package:buku_tamu/src/features/guest/domain/entity/guest_entity.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_bloc.dart';
 import 'package:buku_tamu/src/features/guest/presentation/bloc/guest_event.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GuestForm extends StatefulWidget {
-  final List<Map<String, dynamic>> employees;
+  final List<EmployeeModel> employees;
   const GuestForm({super.key, required this.employees});
 
   @override
@@ -23,11 +24,12 @@ class _GuestFormState extends State<GuestForm> {
   final TextEditingController _descriptionController = TextEditingController();
   String? selectedEmployeeId;
   String _countryCode = '+62';
+
   @override
   void initState() {
     super.initState();
     if (widget.employees.isNotEmpty) {
-      selectedEmployeeId = widget.employees.first['id'].toString();
+      selectedEmployeeId = widget.employees.first.id;
     } else {
       selectedEmployeeId = null;
     }
@@ -53,7 +55,7 @@ class _GuestFormState extends State<GuestForm> {
           const SizedBox(height: 16),
           phone(),
           const SizedBox(height: 16),
-          toEmployee(widget),
+          toEmployee(),
           const SizedBox(height: 16),
           description(),
           const SizedBox(height: 24),
@@ -63,35 +65,30 @@ class _GuestFormState extends State<GuestForm> {
     );
   }
 
-  DropdownMenu<String> toEmployee(state) {
-    return DropdownMenu<String>(
-      inputDecorationTheme: InputDecorationTheme(
+  DropdownButtonFormField<String> toEmployee() {
+    return DropdownButtonFormField<String>(
+      initialValue: selectedEmployeeId,
+      decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
-        border: OutlineInputBorder(),
+        fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
+        border: const OutlineInputBorder(),
+        labelText: 'Kepada',
       ),
-      width: MediaQuery.of(context).size.width,
-      enableFilter: true,
-      requestFocusOnTap: true,
-      leadingIcon: const Icon(Icons.search),
-      label: const Text('Kepada'),
-      hintText: 'Pilih pegawai',
-      initialSelection: state.employees.isNotEmpty
-          ? state.employees[0]['id']
-          : null,
-      dropdownMenuEntries: state.employees
-          .map<DropdownMenuEntry<String>>(
-            (employee) => DropdownMenuEntry<String>(
-              value: employee['id'],
-              label: employee['fullName'],
+      items: widget.employees
+          .map(
+            (employee) => DropdownMenuItem<String>(
+              value: employee.id,
+              child: Text(employee.fullName),
             ),
           )
           .toList(),
-      onSelected: (value) {
+      onChanged: (value) {
         setState(() {
           selectedEmployeeId = value;
         });
       },
+      validator: (value) =>
+          value == null || value.isEmpty ? 'Pilih pegawai' : null,
     );
   }
 
@@ -151,11 +148,11 @@ class _GuestFormState extends State<GuestForm> {
       maxLines: 5,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+        fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
         labelText: 'Keterangan',
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
-      validator: (value) => value!.isEmpty ? 'Nomor telepon wajib diisi' : null,
+      validator: (value) => value!.isEmpty ? 'Keterangan wajib diisi' : null,
     );
   }
 
@@ -175,7 +172,7 @@ class _GuestFormState extends State<GuestForm> {
               return InputDecorator(
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+                  fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
                   labelText: 'Kode Negara',
                   border: const OutlineInputBorder(),
                   errorText: field.errorText,
@@ -209,7 +206,6 @@ class _GuestFormState extends State<GuestForm> {
             },
           ),
         ),
-
         const SizedBox(width: 16),
         Flexible(
           flex: 2,
@@ -218,9 +214,9 @@ class _GuestFormState extends State<GuestForm> {
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               filled: true,
-              fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+              fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
               labelText: 'No Telp',
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
             validator: (value) =>
                 value!.isEmpty ? 'Nomor telepon wajib diisi' : null,
@@ -236,9 +232,9 @@ class _GuestFormState extends State<GuestForm> {
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+        fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
         labelText: 'Email',
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       validator: (value) => value!.contains('@') ? null : 'Email tidak valid',
     );
@@ -249,9 +245,9 @@ class _GuestFormState extends State<GuestForm> {
       controller: _fullNameController,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Color(0xFFEDF5F4).withValues(alpha: 0.8),
+        fillColor: const Color(0xFFEDF5F4).withValues(alpha: 0.8),
         labelText: 'Nama Lengkap',
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
       validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
     );
@@ -260,7 +256,7 @@ class _GuestFormState extends State<GuestForm> {
   TextFormField companyName() {
     return TextFormField(
       controller: _companyController,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         filled: true,
         fillColor: Color(0xFFEDF5F4),
         labelText: 'Asal Perusahaan',

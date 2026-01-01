@@ -1,63 +1,79 @@
-import 'package:buku_tamu/src/features/auth/domain/usecase/get_token_usecase.dart';
-import 'package:buku_tamu/src/features/auth/domain/usecase/login_usecase.dart';
-import 'package:buku_tamu/src/features/auth/domain/usecase/logout_usecase.dart';
-import 'package:buku_tamu/src/features/auth/domain/usecase/register_usecase.dart';
+import 'dart:async';
+import 'package:buku_tamu/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_state.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final GetTokenUseCase getTokenUseCase;
-  final LoginUsecase loginUserUseCase;
-  final LogoutUseCase logoutUseCase;
-  final RegisterUseCase registerUserUseCase;
+  final AuthRepository repository;
 
-  AuthBloc(
-    this.loginUserUseCase,
-    this.logoutUseCase,
-    this.getTokenUseCase,
-    this.registerUserUseCase,
-  ) : super(AuthInitial()) {
-    on<SubmitLoginEvent>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        final res = await loginUserUseCase(event.email, event.password);
-        emit(AuthAuthenticated(res));
-      } on FirebaseAuthException catch (e) {
-        emit(AuthFailure(error: e.message ?? 'An unknown error occurred'));
-      }
-    });
+  AuthBloc(this.repository) : super(AuthState.unknown()) {
+    on<AuthStarted>(_onStarted);
+    on<SubmitLoginEvent>(_onLogin);
+    on<SubmitRegisterEvent>(_onRegister);
+    on<AuthLogoutRequested>(_onLogout);
+  }
 
-    on<CheckAuthEvent>((event, emit) async {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        emit(AuthAuthenticated(currentUser));
+  void _onStarted(AuthStarted event, Emitter<AuthState> emit) {
+    final user = repository.getCurrentUser();
+    if (user != null) {
+      emit(AuthState.authenticated(user));
+    } else {
+      emit(AuthState.unauthenticated());
+    }
+  }
+
+  Future<void> _onLogin(
+    SubmitLoginEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthState.loading());
+    try {
+      await repository.login(event.email, event.password);
+
+      final user = repository.getCurrentUser();
+      if (user != null) {
+        emit(AuthState.authenticated(user));
       } else {
-        emit(AuthUnauthenticated());
+        emit(AuthState.failure('Login failed'));
       }
-    });
+    } catch (e) {
+      emit(AuthState.failure(e.toString()));
+    }
+  }
 
-    on<LogoutEvent>((event, emit) async {
-      await logoutUseCase();
-      emit(AuthUnauthenticated());
-    });
+  Future<void> _onRegister(
+    SubmitRegisterEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthState.loading());
+    try {
+      await repository.register(
+        event.email,
+        event.password,
+        event.fullName,
+        event.companyName,
+        event.countryCode,
+        event.phone,
+      );
 
-    on<SubmitRegisterEvent>((event, emit) async {
-      emit(AuthLoading());
-      try {
-        final res = await registerUserUseCase(
-          event.email,
-          event.password,
-          event.fullName,
-          event.companyName,
-          event.countryCode,
-          event.phone,
-        );
-        emit(AuthSuccess(res));
-      } on FirebaseAuthException catch (e) {
-        emit(AuthFailure(error: e.message ?? 'An unknown error occurred'));
+      final user = repository.getCurrentUser();
+      if (user != null) {
+        emit(AuthState.authenticated(user));
+      } else {
+        emit(AuthState.failure('Registration failed'));
       }
-    });
+    } catch (e) {
+      emit(AuthState.failure(e.toString()));
+    }
+  }
+  Future<void> _onLogout(
+    AuthLogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    await repository.logout();
+    emit(AuthState.unauthenticated());
   }
 }
+
+

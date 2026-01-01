@@ -96,7 +96,6 @@ class _LoginFormState extends State<LoginForm> {
                         password: _passwordController.text,
                       ),
                     );
-                    context.go('/home');
                   }
                 },
     

@@ -19,7 +19,6 @@ class GuestLoaded extends GuestState {
   GuestLoaded(this.employees);
 }
 
-class EmployeesLoading extends GuestState {}
 
 class FormSubmitting extends GuestState {}
 

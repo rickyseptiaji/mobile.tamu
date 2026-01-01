@@ -1,19 +1,16 @@
-import 'package:buku_tamu/src/features/auth/data/datasource/auth_datasource.dart';
 import 'package:buku_tamu/src/features/auth/data/datasource/firebase_auth_datasource.dart';
+import 'package:buku_tamu/src/features/auth/domain/entity/auth_user.dart';
 import 'package:buku_tamu/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final FirebaseAuthDatasource remoteDataSource;
-  final LocalDataSource localDataSource;
-  AuthRepositoryImpl({
-    required this.remoteDataSource,
-    required this.localDataSource,
-  });
+  final FirebaseAuthDatasource auth;
+  final FirebaseAuth firebaseAuth;
+  AuthRepositoryImpl(this.auth, this.firebaseAuth);
 
   @override
-  Future<User> login(String email, String password) async {
-    return await remoteDataSource.login(email, password);
+  Future<void> login(String email, String password) async {
+    await auth.login(email, password);
   }
 
   @override
@@ -25,7 +22,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String countryCode,
     String phone,
   ) async {
-    await remoteDataSource.register(
+    await auth.register(
       email,
       password,
       fullName,
@@ -37,18 +34,15 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> saveToken(String token) {
-    return localDataSource.saveToken(token);
+  AuthUser? getCurrentUser() {
+    final user = firebaseAuth.currentUser;
+    if (user == null) return null;
+
+    return AuthUser(id: user.uid, email: user.email);
   }
 
   @override
-  Future<String?> getToken() async {
-    return await localDataSource.getToken();
-  }
-
-  @override
-  Future<void> logout() async {
-    await remoteDataSource.logout();
-    await localDataSource.deleteToken();
+  Future<void> logout() {
+    return auth.logout();
   }
 }

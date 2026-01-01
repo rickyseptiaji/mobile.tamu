@@ -7,5 +7,3 @@ class SubmitGuestEvent extends GuestEvent {
   final GuestEntity guest;
   SubmitGuestEvent(this.guest);
 }
-
-class LoadEmployeesEvent extends GuestEvent {}

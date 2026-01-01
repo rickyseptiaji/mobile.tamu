@@ -3,6 +3,7 @@ import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_state.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/register_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -12,26 +13,24 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthSuccess) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.message)));
-            Navigator.of(context).pop();
-          } else if (state is AuthFailure) {
+          if (state.status == AuthStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Registration Failed: ${state.error}')),
+              SnackBar(content: Text(state.message ?? 'Registration failed')),
             );
+          }
+
+          if (state.status == AuthStatus.authenticated) {
+            context.go('/home');
           }
         },
         builder: (context, state) {
-          if (state is AuthLoading) {
+          if (state.status == AuthStatus.loading) {
             return const Center(child: CircularProgressIndicator());
           }
+
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: RegisterForm(),
-            ),
+            padding: const EdgeInsets.all(16),
+            child: RegisterForm(),
           );
         },
       ),

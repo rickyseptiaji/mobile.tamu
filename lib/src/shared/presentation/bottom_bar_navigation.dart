@@ -1,5 +1,5 @@
-import 'package:buku_tamu/src/features/home/presentation/pages/home_screen.dart';
 import 'package:buku_tamu/src/features/settings/presentation/pages/settings_screen.dart';
+import 'package:buku_tamu/src/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class NavigationBar extends StatefulWidget {
@@ -12,7 +12,7 @@ class NavigationBar extends StatefulWidget {
 class _BottomNavigationBarExampleState extends State<NavigationBar> {
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
+    HomePage(),  
     SettingsScreen(),
   ];
 

@@ -14,7 +14,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsPage2State extends State<SettingsScreen> {
   Future<void> logout() async {
-    context.read<AuthBloc>().add(LogoutEvent());
+    context.read<AuthBloc>().add(AuthLogoutRequested());
     context.go('/login');
   }
 

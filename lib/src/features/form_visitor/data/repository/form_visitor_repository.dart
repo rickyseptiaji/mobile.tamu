@@ -5,10 +5,9 @@ class FormVisitorRepositoryImpl extends FormVisitorRepository {
   final FormVisitorDatasource remoteDataSource;
 
   FormVisitorRepositoryImpl({required this.remoteDataSource});
-  
-    @override
+
+  @override
   Future<String> addVisitor(String employeeId, String description) async {
     return remoteDataSource.addVisitor(employeeId, description);
   }
-  
 }

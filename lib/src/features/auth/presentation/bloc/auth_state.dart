@@ -1,22 +1,36 @@
-// Auth
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:buku_tamu/src/features/auth/domain/entity/auth_user.dart';
 
-abstract class AuthState {}
-
-class AuthInitial extends AuthState {}
-class AuthLoading extends AuthState {}
-class AuthSuccess extends AuthState {
-  final String message;
-  AuthSuccess(this.message);
-}
-class AuthFailure extends AuthState {
-  final String error;
-  AuthFailure({required this.error});
+enum AuthStatus {
+  unknown,
+  loading,
+  authenticated,
+  unauthenticated,
+  failure,
 }
 
-class AuthAuthenticated extends AuthState {
-  final User user;
-  AuthAuthenticated(this.user);
-}
-class AuthUnauthenticated extends AuthState {}
+class AuthState {
+  final AuthStatus status;
+  final AuthUser? user;
+  final String? message;
 
+  const AuthState({
+    required this.status,
+    this.user,
+    this.message,
+  });
+
+  factory AuthState.unknown() =>
+      const AuthState(status: AuthStatus.unknown);
+
+  factory AuthState.loading() =>
+      const AuthState(status: AuthStatus.loading);
+
+  factory AuthState.authenticated(AuthUser user) =>
+      AuthState(status: AuthStatus.authenticated, user: user);
+
+  factory AuthState.unauthenticated() =>
+      const AuthState(status: AuthStatus.unauthenticated);
+
+  factory AuthState.failure(String message) =>
+      AuthState(status: AuthStatus.failure, message: message);
+}
