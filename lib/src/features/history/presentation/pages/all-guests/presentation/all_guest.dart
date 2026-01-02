@@ -1,8 +1,10 @@
+import 'package:buku_tamu/src/core/helper/slug.dart';
 import 'package:buku_tamu/src/features/history/presentation/bloc/all_history/all_history_bloc.dart';
 import 'package:buku_tamu/src/features/history/presentation/bloc/all_history/all_history_event.dart';
 import 'package:buku_tamu/src/features/history/presentation/bloc/all_history/all_history_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AllGuest extends StatelessWidget {
   const AllGuest({super.key});
@@ -10,12 +12,15 @@ class AllGuest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('All Guests'), centerTitle: true),
+      appBar: AppBar(title: const Text('All History'), centerTitle: true),
       body: BlocBuilder<AllHistoryBloc, AllHistoryState>(
         builder: (context, state) {
           if (state.status == AllHistoryStatus.loading &&
               state.histories.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: const Center(child: CircularProgressIndicator()),
+            );
           }
           if (state.status == AllHistoryStatus.failure &&
               state.histories.isEmpty) {
@@ -58,6 +63,10 @@ class AllGuest extends StatelessWidget {
                     subtitle: Text(
                       'Visited on ${history.history.createdAt.toLocal().toString().split(' ')[0]}',
                     ),
+                    onTap: () {
+                      final slug = generateSlug(history.history.id);
+                      context.push('/guest/$slug');
+                    },
                   ),
                 );
               },

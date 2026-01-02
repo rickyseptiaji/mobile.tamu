@@ -1,8 +1,6 @@
-import 'package:buku_tamu/src/features/all-guests/presentation/pages/all_guest_page.dart';
+import 'package:buku_tamu/src/features/history/presentation/pages/all-guests/presentation/all_guest_page.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/login_screen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/register_screen.dart';
-import 'package:buku_tamu/src/features/employee/domain/repository/employee_repository.dart';
-import 'package:buku_tamu/src/features/employee/presentation/bloc/employee_bloc.dart';
 import 'package:buku_tamu/src/features/form_visitor/presentation/pages/form.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest_scope.dart';
 import 'package:buku_tamu/src/features/history/presentation/pages/detail.dart';
@@ -10,7 +8,6 @@ import 'package:buku_tamu/src/presentation/pages/home_page.dart';
 import 'package:buku_tamu/src/shared/presentation/bottom_bar_navigation.dart';
 import 'package:buku_tamu/src/shared/presentation/main_layout.dart';
 import 'package:buku_tamu/src/shared/presentation/splash_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
@@ -43,28 +40,13 @@ final router = GoRouter(
     /// =============================
     ShellRoute(
       builder: (context, state, child) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (_) =>
-                  EmployeeCubit(context.read<EmployeeRepository>())
-                    ..fetchEmployees(),
-            ),
-          ],
-          child: NavigationBar(),
-        );
+        return NavigationBar();
       },
       routes: [
         GoRoute(path: '/home', builder: (context, state) => const HomePage()),
       ],
     ),
-    GoRoute(
-      path: '/home/detail-recent-visitor/:slug',
-      builder: (context, state) {
-        final slug = state.pathParameters['slug']!;
-        return DetailPage(slug: slug);
-      },
-    ),
+
     GoRoute(
       path: '/home/form-guest',
       builder: (context, state) => const FormPage(),
@@ -72,6 +54,13 @@ final router = GoRouter(
     GoRoute(
       path: '/home/all-guest',
       builder: (context, state) => const AllGuestPage(),
+    ),
+    GoRoute(
+      path: '/guest/:slug',
+      builder: (context, state) {
+        final slug = state.pathParameters['slug']!;
+        return DetailPage(slug: slug);
+      },
     ),
   ],
 );

@@ -63,14 +63,14 @@ class HomeHistorySection extends StatelessWidget {
                       backgroundColor: Colors.blue,
                       child: Icon(Icons.person, color: Colors.white),
                     ),
-                    title: Text(history.user?.fullName ?? 'Unknown'),
+                    title: Text(history.user.fullName),
                     subtitle: Text(
                       'Visited on ${history.history.createdAt.toLocal().toString().split(' ')[0]}',
                     ),
                     trailing: const Icon(Icons.arrow_forward_ios),
                     onTap: () {
                       final slug = generateSlug(history.history.id);
-                      context.push('/home/detail-recent-visitor/$slug');
+                      context.push('/guest/$slug');
                     },
                   ),
                 );

@@ -1,5 +1,5 @@
 import 'package:buku_tamu/injection_container.dart';
-import 'package:buku_tamu/src/features/all-guests/presentation/pages/all_guest.dart';
+import 'package:buku_tamu/src/features/history/presentation/pages/all-guests/presentation/all_guest.dart';
 import 'package:buku_tamu/src/features/history/presentation/bloc/all_history/all_history_bloc.dart';
 import 'package:buku_tamu/src/features/history/presentation/bloc/all_history/all_history_event.dart';
 import 'package:flutter/material.dart';

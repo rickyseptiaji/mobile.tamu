@@ -17,7 +17,6 @@ class DetailRecentVisitor extends StatelessWidget {
           } else if (state.status == HomeHistoryStatus.success &&
               state.selectedHistory != null) {
             final history = state.selectedHistory!;
-            print(history.user?.fullName);
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Container(
@@ -47,7 +46,7 @@ class DetailRecentVisitor extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      history.user?.fullName ?? 'Unknown',
+                      history.user.fullName,
                       style: TextStyle(fontSize: 16),
                     ),
 
@@ -61,7 +60,7 @@ class DetailRecentVisitor extends StatelessWidget {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      history.user?.fullName ?? 'Unknown',
+                      history.user.fullName,
                       style: TextStyle(fontSize: 16),
                     ),
                     SizedBox(height: 16),
