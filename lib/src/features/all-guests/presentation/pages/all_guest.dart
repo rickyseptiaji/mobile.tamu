@@ -13,31 +13,40 @@ class AllGuest extends StatelessWidget {
       appBar: AppBar(title: const Text('All Guests'), centerTitle: true),
       body: BlocBuilder<AllHistoryBloc, AllHistoryState>(
         builder: (context, state) {
-          // 1️⃣ Loading
-          if (state.status == AllHistoryStatus.loading) {
+          if (state.status == AllHistoryStatus.loading &&
+              state.histories.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
-
-          // 2️⃣ Failure
-          if (state.status == AllHistoryStatus.failure) {
-            return const Text('Failed to load history');
-          }
-
-          // 3️⃣ Empty
-          if (state.histories.isEmpty) {
-            return const Text('No history found');
+          if (state.status == AllHistoryStatus.failure &&
+              state.histories.isEmpty) {
+            return const Center(child: Text('Failed to load history'));
           }
 
           return RefreshIndicator(
             onRefresh: () async {
-              context.read<AllHistoryBloc>().add(AllHistoryFetch());
+              context.read<AllHistoryBloc>().add(AllHistoryFetch(limit: 10));
             },
             child: ListView.builder(
               padding: const EdgeInsets.all(8),
-              itemCount: state.histories.length,
+              itemCount: state.hasReachedMax
+                  ? state.histories.length
+                  : state.histories.length + 1,
               itemBuilder: (context, index) {
+                if (index == state.histories.length) {
+                  context.read<AllHistoryBloc>().add(
+                    AllHistoryLoadMore(limit: 10),
+                  );
+
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  );
+                }
+
                 final history = state.histories[index];
-            
+
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 6),
                   child: ListTile(
@@ -45,11 +54,10 @@ class AllGuest extends StatelessWidget {
                       backgroundColor: Colors.blue,
                       child: Icon(Icons.person, color: Colors.white),
                     ),
-                    title: Text(history.user?.fullName ?? 'Unknown'),
+                    title: Text(history.user.fullName),
                     subtitle: Text(
                       'Visited on ${history.history.createdAt.toLocal().toString().split(' ')[0]}',
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   ),
                 );
               },

@@ -8,7 +8,7 @@ class HistoryItemModel extends HistoryItem {
     HistoryUserModel? user,
   }) : super(
           history: history,
-          user: user,
+          user: user!,
         );
 
   factory HistoryItemModel.fromFirestore(

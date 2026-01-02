@@ -13,7 +13,8 @@ class AllGuestPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AllHistoryBloc>(
-          create: (_) => sl<AllHistoryBloc>()..add(AllHistoryFetch()),
+          create: (_) => sl<AllHistoryBloc>()..add(AllHistoryFetch(limit: 10)),
+          
         ),
       ],
       child: AllGuest(),

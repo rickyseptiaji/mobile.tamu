@@ -17,6 +17,7 @@ class DetailRecentVisitor extends StatelessWidget {
           } else if (state.status == HomeHistoryStatus.success &&
               state.selectedHistory != null) {
             final history = state.selectedHistory!;
+            print(history.user?.fullName);
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Container(

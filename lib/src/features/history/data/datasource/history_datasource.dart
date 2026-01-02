@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 abstract class HistoryRemoteDataSource {
-  Future<List<Map<String, dynamic>>> fetchHistory({
+  Future<List<QueryDocumentSnapshot>> fetchHistory({
     required String userId,
-    int limit,
+    required int limit,
+    DocumentSnapshot? lastDocument,
   });
   Future<Map<String, dynamic>> fetchHistoryDetail({required String slug});
 }
@@ -13,26 +14,27 @@ class HistoryRemoteDataSourceImpl implements HistoryRemoteDataSource {
 
   HistoryRemoteDataSourceImpl({required this.firestore});
 
-  @override
-  Future<List<Map<String, dynamic>>> fetchHistory({
+ @override
+  Future<List<QueryDocumentSnapshot>> fetchHistory({
     required String userId,
-    int limit = 5,
+    required int limit,
+    DocumentSnapshot? lastDocument,
   }) async {
     try {
-      final querySnapshot = await firestore
+      Query query = firestore
           .collection('visits')
           .where('userId', isEqualTo: userId)
           .orderBy('createdAt', descending: true)
-          .limit(limit)
-          .get();
+          .limit(limit);
 
-      return querySnapshot.docs.map((doc) {
-        return {'id': doc.id, ...doc.data()};
-      }).toList();
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+
+      final snapshot = await query.get();
+      return snapshot.docs;
     } on FirebaseException catch (e) {
-      throw Exception('Failed to load history data: ${e.message}');
-    } catch (e) {
-      throw Exception('Unexpected error occurred: $e');
+      throw Exception('Failed to load history: ${e.message}');
     }
   }
 

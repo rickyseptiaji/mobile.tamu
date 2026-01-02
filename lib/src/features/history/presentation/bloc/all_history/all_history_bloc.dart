@@ -9,75 +9,75 @@ class AllHistoryBloc extends Bloc<AllHistoryEvent, AllHistoryState> {
   final AuthRepository authRepository;
 
   AllHistoryBloc(this.repository, this.authRepository)
-      : super(const AllHistoryState()) {
-    on<AllHistoryFetch>(_onFetchAllHistory);
-    on<AllHistoryLoadMore>(_onLoadMoreHistory);
+    : super(const AllHistoryState()) {
+    on<AllHistoryFetch>(_onFetch);
+    on<AllHistoryLoadMore>(_onLoadMore);
   }
 
-  Future<void> _onFetchAllHistory(
+  Future<void> _onFetch(
     AllHistoryFetch event,
     Emitter<AllHistoryState> emit,
   ) async {
-    emit(state.copyWith(
-      status: AllHistoryStatus.loading,
-      page: 1,
-      hasReachedMax: false,
-      histories: [],
-    ));
+    emit(const AllHistoryState(status: AllHistoryStatus.loading));
 
     final userId = authRepository.getCurrentUser()?.id;
 
     try {
-      final data = await repository.getHistory(
+      final result = await repository.getHistory(
         userId: userId!,
-        page: 1,
         limit: event.limit,
       );
 
-      emit(state.copyWith(
-        status: AllHistoryStatus.success,
-        histories: data,
-        page: 1,
-        hasReachedMax: data.length < event.limit,
-      ));
-    } catch (e) {
-      emit(state.copyWith(
-        status: AllHistoryStatus.failure,
-        error: e.toString(),
-      ));
-    }
-  }
-
-  Future<void> _onLoadMoreHistory(
-    AllHistoryLoadMore event,
-    Emitter<AllHistoryState> emit,
-  ) async {
-    if (state.hasReachedMax ||
-        state.status == AllHistoryStatus.loadingMore) return;
-
-    emit(state.copyWith(status: AllHistoryStatus.loadingMore));
-
-    final userId = authRepository.getCurrentUser()?.id;
-    final nextPage = state.page + 1;
-
-    try {
-      final data = await repository.getHistory(
-        userId: userId!,
-        page: nextPage,
-        limit: event.limit,
+      emit(
+        state.copyWith(
+          status: AllHistoryStatus.success,
+          histories: result.items,
+          lastDocument: result.lastDocument,
+          hasReachedMax: result.items.length < event.limit,
+        ),
       );
-
-      emit(state.copyWith(
-        status: AllHistoryStatus.success,
-        histories: [...state.histories, ...data], // 🔥 APPEND
-        page: nextPage,
-        hasReachedMax: data.length < event.limit,
-      ));
     } catch (e) {
-      emit(state.copyWith(
-        status: AllHistoryStatus.failure,
-        error: e.toString(),
-      ));
+      emit(
+        state.copyWith(status: AllHistoryStatus.failure, error: e.toString()),
+      );
     }
   }
+Future<void> _onLoadMore(
+  AllHistoryLoadMore event,
+  Emitter<AllHistoryState> emit,
+) async {
+  if (state.hasReachedMax ||
+      state.status == AllHistoryStatus.loadingMore) {
+    return;
+  }
+
+  emit(state.copyWith(status: AllHistoryStatus.loadingMore));
+
+  final userId = authRepository.getCurrentUser()?.id;
+
+  try {
+    final result = await repository.getHistory(
+      userId: userId!,
+      limit: event.limit,
+      lastDocument: state.lastDocument,
+    );
+
+    emit(
+      state.copyWith(
+        status: AllHistoryStatus.success,
+        histories: [...state.histories, ...result.items],
+        lastDocument: result.lastDocument,
+        hasReachedMax: result.items.length < event.limit,
+      ),
+    );
+  } catch (e) {
+    emit(
+      state.copyWith(
+        status: AllHistoryStatus.success,
+        error: e.toString(),
+      ),
+    );
+  }
+}
+
 }

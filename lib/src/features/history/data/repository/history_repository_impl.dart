@@ -9,52 +9,56 @@ class HistoryRepositoryImpl implements HistoryRepository {
   final FirebaseFirestore firestore;
 
   HistoryRepositoryImpl({required this.remote, required this.firestore});
-
   @override
-  Future<List<HistoryItem>> getHistory({
+  Future<HistoryPaginationResult> getHistory({
     required String userId,
-    int page = 1,
-    int limit = 5,
+    required int limit,
+    DocumentSnapshot? lastDocument,
   }) async {
-    final visits = await remote.fetchHistory(userId: userId, limit: limit);
-    final userIds = visits.map((e) => e['userId'] as String).toSet();
-    final usersMap = <String, HistoryUser>{};
-    if (userIds.isNotEmpty) {
-      final querySnapshot = await firestore
+    final docs = await remote.fetchHistory(
+      userId: userId,
+      limit: limit,
+      lastDocument: lastDocument,
+    );
+
+    final List<HistoryItem> items = [];
+
+    for (final doc in docs) {
+      final data = doc.data() as Map<String, dynamic>;
+
+      final history = HistoryDetail(
+        id: doc.id,
+        description: data['description'],
+        createdAt: (data['createdAt'] as Timestamp).toDate(),
+        userId: data['userId'],
+      );
+
+      // 🔥 ambil user
+      final userDoc = await firestore
           .collection('users')
-          .where(FieldPath.documentId, whereIn: userIds.toList())
+          .doc(history.userId)
           .get();
 
-      for (var doc in querySnapshot.docs) {
-        final data = doc.data();
-        usersMap[doc.id] = HistoryUser(
-          userId: doc.id,
-          fullName: data['fullName'] ?? '',
-          email: data['email'] ?? '',
-          phone: data['phone'] ?? '',
-          createdAt: (data['createdAt'] as Timestamp).toDate(),
+      HistoryUser? user;
+
+      if (userDoc.exists) {
+        final u = userDoc.data()!;
+        user = HistoryUser(
+          userId: userDoc.id,
+          fullName: u['fullName'],
+          email: u['email'],
+          phone: u['phone'],
+          createdAt: (u['createdAt'] as Timestamp).toDate(),
         );
       }
+
+      items.add(HistoryItem(history: history, user: user!));
     }
-    return visits.map((visit) {
-      final history = HistoryDetailModel.fromFirestore(
-        visit['id'] as String,
-        visit,
-      );
-      final user = usersMap[history.userId];
-      return HistoryItemModel(
-        history: history,
-        user: user != null
-            ? HistoryUserModel(
-                userId: user.userId,
-                fullName: user.fullName,
-                email: user.email,
-                phone: user.phone,
-                createdAt: user.createdAt,
-              )
-            : null,
-      );
-    }).toList();
+
+    return HistoryPaginationResult(
+      items: items,
+      lastDocument: docs.isNotEmpty ? docs.last : null,
+    );
   }
 
   @override

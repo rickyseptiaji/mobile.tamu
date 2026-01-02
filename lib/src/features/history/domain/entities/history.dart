@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HistoryItem {
   final HistoryDetail history;
-  final HistoryUser? user;
+  final HistoryUser user;
 
-  const HistoryItem({required this.history, this.user});
+  const HistoryItem({required this.history, required this.user});
 }
 
 class HistoryUser {

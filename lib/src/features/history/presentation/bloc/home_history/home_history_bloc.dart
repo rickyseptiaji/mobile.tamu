@@ -14,21 +14,29 @@ class HomeHistoryBloc extends Bloc<HomeHistoryEvent, HomeHistoryState> {
      on<LoadHistoryDetail>(_onLoadDetail);
   }
 
-  Future<void> _onFetch(
+ Future<void> _onFetch(
     HomeHistoryFetch event,
     Emitter<HomeHistoryState> emit,
   ) async {
     emit(state.copyWith(status: HomeHistoryStatus.loading));
+
     final userId = authRepository.getCurrentUser()?.id;
+
     try {
-      final data = await repository.getHistory(
+      final result = await repository.getHistory(
         userId: userId!,
         limit: event.limit,
       );
 
-      emit(state.copyWith(status: HomeHistoryStatus.success, histories: data));
-    } catch (_) {
-      emit(state.copyWith(status: HomeHistoryStatus.failure));
+      emit(state.copyWith(
+        status: HomeHistoryStatus.success,
+        histories: result.items,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        status: HomeHistoryStatus.failure,
+        error: e.toString(),
+      ));
     }
   }
 
