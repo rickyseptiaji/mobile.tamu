@@ -1,9 +1,10 @@
+import 'package:buku_tamu/src/features/form_visitor/presentation/pages/form.dart';
 import 'package:buku_tamu/src/features/history/presentation/pages/all-guests/presentation/all_guest_page.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/login_screen.dart';
 import 'package:buku_tamu/src/features/auth/presentation/pages/register_screen.dart';
-import 'package:buku_tamu/src/features/form_visitor/presentation/pages/form.dart';
 import 'package:buku_tamu/src/features/guest/presentation/pages/guest_scope.dart';
 import 'package:buku_tamu/src/features/history/presentation/pages/detail.dart';
+import 'package:buku_tamu/src/features/settings/presentation/pages/settings_screen.dart';
 import 'package:buku_tamu/src/presentation/pages/home_page.dart';
 import 'package:buku_tamu/src/shared/presentation/bottom_bar_navigation.dart';
 import 'package:buku_tamu/src/shared/presentation/main_layout.dart';
@@ -40,10 +41,11 @@ final router = GoRouter(
     /// =============================
     ShellRoute(
       builder: (context, state, child) {
-        return NavigationBar();
+        return NavigationBar(child: child);
       },
       routes: [
-        GoRoute(path: '/home', builder: (context, state) => const HomePage()),
+        GoRoute(path: '/home', builder: (_, __) => const HomePage()),
+        GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
       ],
     ),
 
@@ -51,6 +53,7 @@ final router = GoRouter(
       path: '/home/form-guest',
       builder: (context, state) => const FormPage(),
     ),
+
     GoRoute(
       path: '/home/all-guest',
       builder: (context, state) => const AllGuestPage(),

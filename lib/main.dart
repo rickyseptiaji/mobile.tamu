@@ -1,5 +1,6 @@
 import 'package:buku_tamu/firebase_options.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:buku_tamu/src/features/history/presentation/bloc/home_history/home_history_bloc.dart';
 import './app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,15 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => di.sl<AuthBloc>())],
-      child: App(),
+      providers: [
+        BlocProvider<AuthBloc>(create: (_) => di.sl<AuthBloc>()),
+        BlocProvider<HomeHistoryBloc>(create: (_) => di.sl<HomeHistoryBloc>()),
+      ],
+      child: const App(),
     );
   }
 }

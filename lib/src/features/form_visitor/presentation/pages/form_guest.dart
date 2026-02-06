@@ -29,7 +29,7 @@ class _FormGuestState extends State<FormGuest> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message ?? 'Success')));
-            context.go('/home');
+            context.pop(true);
           } else if (state.status == FormVisitorStatus.failure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error ?? 'Error occurred')),
@@ -124,14 +124,23 @@ class _FormGuestState extends State<FormGuest> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            context.read<FormVisitorBloc>().add(
-                              SubmitVisitorEvent(
-                                employeeId: selectedEmployeeId!,
-                                description: descriptionController.text,
+                          if (!_formKey.currentState!.validate()) return;
+
+                          if (selectedEmployeeId == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Silakan pilih pegawai'),
                               ),
                             );
+                            return;
                           }
+
+                          context.read<FormVisitorBloc>().add(
+                            SubmitVisitorEvent(
+                              employeeId: selectedEmployeeId!,
+                              description: descriptionController.text,
+                            ),
+                          );
                         },
                         child: const Text('Submit'),
                       ),

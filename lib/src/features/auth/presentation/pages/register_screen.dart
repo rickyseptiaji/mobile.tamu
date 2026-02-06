@@ -22,6 +22,9 @@ class RegisterScreen extends StatelessWidget {
           if (state.status == AuthStatus.authenticated) {
             context.go('/home');
           }
+          if (state.status == AuthStatus.unauthenticated) {
+            context.go('/login');
+          }
         },
         builder: (context, state) {
           if (state.status == AuthStatus.loading) {

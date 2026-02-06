@@ -1,4 +1,7 @@
+import 'package:buku_tamu/src/features/history/presentation/bloc/home_history/home_history_bloc.dart';
+import 'package:buku_tamu/src/features/history/presentation/bloc/home_history/home_history_event.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class SectionForm extends StatelessWidget {
@@ -26,8 +29,14 @@ class SectionForm extends StatelessWidget {
               ),
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            onPressed: () {
-              context.push('/home/form-guest');
+            onPressed: () async {
+              final result = await context.push('/home/form-guest');
+
+              if (!context.mounted) return;
+
+              if (result == true) {
+                context.read<HomeHistoryBloc>().add(HomeHistoryFetch());
+              }
             },
 
             child: const Text('Open Form', style: TextStyle(fontSize: 16)),

@@ -47,14 +47,13 @@ class FirebaseAuthDatasourceImpl implements FirebaseAuthDatasource {
     final uid = userCredential.user?.uid;
     if (uid != null) {
       await firebaseFirestore.collection('users').doc(uid).set({
-        'userId': uid,
+        'id': uid,
         'fullName': fullName,
         'companyName': companyName,
         'countryCode': countryCode,
         'phone': phone,
         'email': email,
         'role': 'user',
-        'visitCount': null,
         'createdAt': FieldValue.serverTimestamp(),
       });
     }

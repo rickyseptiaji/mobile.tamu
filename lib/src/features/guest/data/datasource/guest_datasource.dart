@@ -44,6 +44,9 @@ class GuestRemoteDataSourceImpl implements GuestRemoteDataSource {
         'guestId': guestRef.id,
         'employeeId': guest.employeeId,
         'description': guest.description,
+        'checkIn': FieldValue.serverTimestamp(),
+        'checkOut': null,
+        'duration': null,
         'createdAt': FieldValue.serverTimestamp(),
       });
     } on FirebaseException catch (e) {

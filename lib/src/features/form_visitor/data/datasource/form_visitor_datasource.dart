@@ -26,6 +26,9 @@ class FormVisitorRemoteDataSourceImpl implements FormVisitorDatasource {
         'userId': userId,
         'employeeId': employeeId,
         'description': description,
+        'checkIn': FieldValue.serverTimestamp(),
+        'checkOut': null,
+        'duration': null,
         'createdAt': FieldValue.serverTimestamp(),
       });
 

@@ -1,38 +1,35 @@
-import 'package:buku_tamu/src/features/settings/presentation/pages/settings_screen.dart';
-import 'package:buku_tamu/src/presentation/pages/home_page.dart';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class NavigationBar extends StatefulWidget {
-  const NavigationBar({super.key});
+class NavigationBar extends StatelessWidget {
+  final Widget child;
 
-  @override
-  State<NavigationBar> createState() => _BottomNavigationBarExampleState();
-}
+  const NavigationBar({super.key, required this.child});
 
-class _BottomNavigationBarExampleState extends State<NavigationBar> {
-  int _selectedIndex = 0;
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomePage(),  
-    SettingsScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  int _locationToIndex(String location) {
+    if (location.startsWith('/home')) return 0;
+    if (location.startsWith('/settings')) return 1;
+    return 0;
   }
 
   @override
   Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).uri.toString();
+    final currentIndex = _locationToIndex(location);
+
     return Scaffold(
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      body: child,
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        currentIndex: currentIndex,
+        onTap: (index) {
+          if (index == 0) context.go('/home');
+          if (index == 1) context.go('/settings');
+        },
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Settings'),
         ],
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
       ),
     );
   }
