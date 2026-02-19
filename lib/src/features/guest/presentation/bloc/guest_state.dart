@@ -8,7 +8,10 @@ class GuestSuccess extends GuestState {
   final String message;
   GuestSuccess({required this.message});
 }
-
+class GuestFailure extends GuestState {
+  final String message;
+  GuestFailure(this.message);
+}
 class GuestError extends GuestState {
   final String error;
   GuestError(this.error);

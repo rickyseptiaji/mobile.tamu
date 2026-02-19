@@ -23,11 +23,11 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          const HeadersHome(),
-          Expanded(
-            child: Container(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const HeadersHome(),
+            Container(
               padding: const EdgeInsets.all(24),
               width: double.infinity,
               decoration: const BoxDecoration(
@@ -35,10 +35,13 @@ class _HomeViewState extends State<HomeView> {
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(80)),
               ),
 
-              child: Column(children: [SectionForm(), HomeHistorySection()]),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [SectionForm(), HomeHistorySection()],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

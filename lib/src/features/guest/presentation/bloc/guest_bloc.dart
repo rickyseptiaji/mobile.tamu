@@ -15,14 +15,5 @@ class GuestBloc extends Bloc<GuestEvent, GuestState> {
         emit(GuestError(e.toString()));
       }
     });
-    // on<LoadEmployeesEvent>((event, emit) async {
-    //   emit(EmployeesLoading());
-    //   try {
-    //     final employees = await fetchEmployeeUseCase();
-    //     emit(GuestLoaded(employees));
-    //   } catch (e) {
-    //     emit(GuestError(e.toString()));
-    //   }
-    // });
   }
 }

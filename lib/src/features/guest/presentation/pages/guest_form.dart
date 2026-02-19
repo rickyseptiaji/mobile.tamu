@@ -35,32 +35,76 @@ class _GuestFormState extends State<GuestForm> {
     }
   }
 
+  void _resetForm() {
+    _formKey.currentState!.reset();
+
+    _companyController.clear();
+    _fullNameController.clear();
+    _emailController.clear();
+    _phoneController.clear();
+    _descriptionController.clear();
+
+    setState(() {
+      _countryCode = '+62';
+      selectedEmployeeId = widget.employees.isNotEmpty
+          ? widget.employees.first.id
+          : null;
+    });
+  }
+
+  @override
+  void dispose() {
+    _companyController.dispose();
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Isi Form Tamu',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 20),
-          companyName(),
-          const SizedBox(height: 16),
-          fullName(),
-          const SizedBox(height: 16),
-          email(),
-          const SizedBox(height: 16),
-          phone(),
-          const SizedBox(height: 16),
-          toEmployee(),
-          const SizedBox(height: 16),
-          description(),
-          const SizedBox(height: 24),
-          submitButton(),
-        ],
+    return BlocListener<GuestBloc, GuestState>(
+      listener: (context, state) {
+        if (state is GuestSuccess) {
+          _resetForm();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Data berhasil dikirim')),
+          );
+        }
+
+        if (state is GuestFailure) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Isi Form Tamu',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 20),
+            companyName(),
+            const SizedBox(height: 16),
+            fullName(),
+            const SizedBox(height: 16),
+            email(),
+            const SizedBox(height: 16),
+            phone(),
+            const SizedBox(height: 16),
+            toEmployee(),
+            const SizedBox(height: 16),
+            description(),
+            const SizedBox(height: 24),
+            submitButton(),
+          ],
+        ),
       ),
     );
   }
@@ -116,8 +160,7 @@ class _GuestFormState extends State<GuestForm> {
                     );
                   }
                 },
-          icon: const Icon(Icons.send),
-          label: isLoading
+          icon: isLoading
               ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -126,7 +169,8 @@ class _GuestFormState extends State<GuestForm> {
                     strokeWidth: 2,
                   ),
                 )
-              : const Text('Kirim'),
+              : const Icon(Icons.send),
+          label: const Text('Kirim'),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
             textStyle: const TextStyle(
@@ -236,7 +280,17 @@ class _GuestFormState extends State<GuestForm> {
         labelText: 'Email',
         border: const OutlineInputBorder(),
       ),
-      validator: (value) => value!.contains('@') ? null : 'Email tidak valid',
+      validator: (value)  {
+        if (value == null || value.isEmpty) {
+          return null;
+        }
+        final emailRegex = RegExp(
+            r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$');
+        if (!emailRegex.hasMatch(value)) {
+          return 'Format email tidak valid';
+        }
+        return null;
+      }
     );
   }
 

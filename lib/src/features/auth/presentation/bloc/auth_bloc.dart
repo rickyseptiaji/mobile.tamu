@@ -23,10 +23,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  Future<void> _onLogin(
-    SubmitLoginEvent event,
-    Emitter<AuthState> emit,
-  ) async {
+  Future<void> _onLogin(SubmitLoginEvent event, Emitter<AuthState> emit) async {
     emit(AuthState.loading());
     try {
       await repository.login(event.email, event.password);
@@ -57,16 +54,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.phone,
       );
 
-      final user = repository.getCurrentUser();
-      if (user != null) {
-        emit(AuthState.authenticated(user));
-      } else {
-        emit(AuthState.failure('Registration failed'));
-      }
+      emit(AuthState.unauthenticated());
     } catch (e) {
       emit(AuthState.failure(e.toString()));
     }
   }
+
   Future<void> _onLogout(
     AuthLogoutRequested event,
     Emitter<AuthState> emit,
@@ -75,5 +68,3 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthState.unauthenticated());
   }
 }
-
-
