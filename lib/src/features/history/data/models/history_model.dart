@@ -4,27 +4,25 @@ import '../../domain/entities/history.dart';
 
 class HistoryItemModel extends HistoryItem {
   HistoryItemModel({
-    required HistoryDetailModel history,
-    HistoryUserModel? user,
-  }) : super(
-          history: history,
-          user: user!,
-        );
+    required HistoryDetailModel super.history,
+    required HistoryUserModel super.user,
+    required super.employee,
+  });
 
   factory HistoryItemModel.fromFirestore(
     String id,
     Map<String, dynamic> json,
+    HistoryUserModel user,
+    HistoryEmployee employee,
   ) {
     return HistoryItemModel(
       history: HistoryDetailModel.fromFirestore(id, json),
-      user: json['user'] == null
-          ? null
-          : HistoryUserModel.fromMap(
-              json['user'],
-            ),
+      user: user,
+      employee: employee,
     );
   }
 }
+
 class HistoryUserModel extends HistoryUser {
   HistoryUserModel({
     required super.userId,
@@ -44,9 +42,11 @@ class HistoryUserModel extends HistoryUser {
     );
   }
 }
+
 class HistoryDetailModel extends HistoryDetail {
   HistoryDetailModel({
     required super.id,
+    required super.employeeId,
     required super.description,
     required super.createdAt,
     required super.userId,
@@ -58,6 +58,7 @@ class HistoryDetailModel extends HistoryDetail {
   ) {
     return HistoryDetailModel(
       id: id,
+      employeeId: json['employeeId'] ?? '',
       description: json['description'] ?? '',
       createdAt: (json['createdAt'] as Timestamp).toDate(),
       userId: json['userId'] ?? '',

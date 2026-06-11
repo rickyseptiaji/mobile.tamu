@@ -1,7 +1,6 @@
 import 'package:buku_tamu/src/core/helper/theme.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -19,7 +18,6 @@ class _SettingsPage2State extends State<SettingsScreen> {
     context.go('/login');
   }
 
-  bool _isDark = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
