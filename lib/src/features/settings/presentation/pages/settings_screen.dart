@@ -1,3 +1,4 @@
+import 'package:buku_tamu/src/core/helper/theme.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:buku_tamu/src/features/auth/presentation/bloc/auth_event.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,55 +34,57 @@ class _SettingsPage2State extends State<SettingsScreen> {
                   _CustomListTile(
                     title: "Dark Mode",
                     icon: Icons.dark_mode_outlined,
-                    trailing: Switch(
-                      value: _isDark,
-                      onChanged: (value) {
-                        setState(() {
-                          _isDark = value;
-                        });
+                    trailing: BlocBuilder<ThemeCubit, bool>(
+                      builder: (context, isDark) {
+                        return Switch(
+                          value: isDark,
+                          onChanged: (value) {
+                          context.read<ThemeCubit>().toggleTheme(value);
+                          },
+                        );
                       },
                     ),
                   ),
-                  const _CustomListTile(
-                    title: "Notifications",
-                    icon: Icons.notifications_none_rounded,
-                  ),
-                  const _CustomListTile(
-                    title: "Security Status",
-                    icon: CupertinoIcons.lock_shield,
-                  ),
+                  // const _CustomListTile(
+                  //   title: "Notifications",
+                  //   icon: Icons.notifications_none_rounded,
+                  // ),
+                  // const _CustomListTile(
+                  //   title: "Security Status",
+                  //   icon: CupertinoIcons.lock_shield,
+                  // ),
                 ],
               ),
-              const Divider(),
-              const _SingleSection(
-                title: "Organization",
-                children: [
-                  _CustomListTile(
-                    title: "Profile",
-                    icon: Icons.person_outline_rounded,
-                  ),
-                  _CustomListTile(
-                    title: "Messaging",
-                    icon: Icons.message_outlined,
-                  ),
-                  _CustomListTile(title: "Calling", icon: Icons.phone_outlined),
-                  _CustomListTile(
-                    title: "People",
-                    icon: Icons.contacts_outlined,
-                  ),
-                  _CustomListTile(
-                    title: "Calendar",
-                    icon: Icons.calendar_today_rounded,
-                  ),
-                ],
-              ),
+              // const Divider(),
+              // const _SingleSection(
+              //   title: "Organization",
+              //   children: [
+              //     _CustomListTile(
+              //       title: "Profile",
+              //       icon: Icons.person_outline_rounded,
+              //     ),
+              //     _CustomListTile(
+              //       title: "Messaging",
+              //       icon: Icons.message_outlined,
+              //     ),
+              //     _CustomListTile(title: "Calling", icon: Icons.phone_outlined),
+              //     _CustomListTile(
+              //       title: "People",
+              //       icon: Icons.contacts_outlined,
+              //     ),
+              //     _CustomListTile(
+              //       title: "Calendar",
+              //       icon: Icons.calendar_today_rounded,
+              //     ),
+              //   ],
+              // ),
               const Divider(),
               _SingleSection(
                 children: [
-                  _CustomListTile(
-                    title: "Help & Feedback",
-                    icon: Icons.help_outline_rounded,
-                  ),
+                  // _CustomListTile(
+                  //   title: "Help & Feedback",
+                  //   icon: Icons.help_outline_rounded,
+                  // ),
                   _CustomListTile(
                     title: "About",
                     icon: Icons.info_outline_rounded,
